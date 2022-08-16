@@ -8,11 +8,36 @@ import (
 	"github.com/diamondburned/arikawa/v3/utils/json/option"
 )
 
-func (c *StatusCommand) Handle(ctx context.Context, interaction *discord.CommandInteraction) *api.InteractionResponse {
+func handleRegion() *api.InteractionResponse {
 	return &api.InteractionResponse{
 		Type: api.MessageInteractionWithSource,
 		Data: &api.InteractionResponseData{
-			Content: option.NewNullableString("현황"),
+			Content: option.NewNullableString("지역 현황"),
 		},
 	}
+}
+
+func handleDomestic() *api.InteractionResponse {
+	_, err := parseNCov()
+	if err != nil {
+		return &api.InteractionResponse{
+			Type: api.MessageInteractionWithSource,
+			Data: &api.InteractionResponseData{
+				Content: option.NewNullableString("오류가 발생했습니다."),
+			},
+		}
+	}
+	return &api.InteractionResponse{
+		Type: api.MessageInteractionWithSource,
+		Data: &api.InteractionResponseData{
+			Content: option.NewNullableString("국내 현황"),
+		},
+	}
+}
+
+func (c *StatusCommand) Handle(ctx context.Context, interaction *discord.CommandInteraction) *api.InteractionResponse {
+	if len(interaction.Options) == 0 {
+		return handleDomestic()
+	}
+	return handleRegion()
 }

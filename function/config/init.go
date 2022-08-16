@@ -3,14 +3,12 @@ package config
 import (
 	"os"
 
-	"github.com/diamondburned/arikawa/v3/discord"
 	"github.com/joho/godotenv"
 )
 
 var (
-	Token       string
-	TestGuildId discord.GuildID = discord.NullGuildID
-	AppID       discord.AppID   = discord.NullAppID
+	Token      string
+	OpenAPIkey string
 )
 
 func init() {
@@ -19,4 +17,5 @@ func init() {
 	}
 
 	Token = os.Getenv("BOT_TOKEN")
+	OpenAPIkey = os.Getenv("OPEN_API_KEY")
 }

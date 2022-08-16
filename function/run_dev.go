@@ -5,7 +5,6 @@ package main
 import (
 	"context"
 	"encoding/json"
-	"fmt"
 	"function/config"
 	"log"
 
@@ -28,7 +27,6 @@ func handler(ctx context.Context, request events.LambdaFunctionURLRequest) *api.
 	if interaction.Data.InteractionType() == discord.CommandInteractionType {
 		commandInteraction := interaction.Data.(*discord.CommandInteraction)
 		if result := commandHandler.Handle(ctx, commandInteraction); result != nil {
-			fmt.Println("result:", result)
 			return result
 		}
 	}
@@ -49,6 +47,7 @@ func run() {
 	if err := s.Open(context.Background()); err != nil {
 		log.Fatalln("failed to open:", err)
 	}
+	log.Println("started")
 	defer s.Close()
 	select {}
 }
