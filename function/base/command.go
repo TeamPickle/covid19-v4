@@ -9,13 +9,13 @@ import (
 
 type handlerFunc func(ctx context.Context, data *discord.CommandInteraction) *api.InteractionResponse
 
-type Command struct {
-	Name    string
-	Handler handlerFunc
+type Command interface {
+	Handle(ctx context.Context, data *discord.CommandInteraction) *api.InteractionResponse
+	Name() string
 }
 
 type CommandHandler interface {
-	Register(commands ...*Command)
+	Register(commands ...Command)
 	Handle(ctx context.Context, data *discord.CommandInteraction) *api.InteractionResponse
 }
 
@@ -24,11 +24,13 @@ type commandHandler struct {
 }
 
 func NewCommandHandler() CommandHandler {
-	return &commandHandler{}
+	return &commandHandler{handlers: map[string]handlerFunc{}}
 }
 
-func (h *commandHandler) Register(commands ...*Command) {
-
+func (h *commandHandler) Register(commands ...Command) {
+	for _, c := range commands {
+		h.handlers[c.Name()] = c.Handle
+	}
 }
 
 func (h *commandHandler) Handle(ctx context.Context, data *discord.CommandInteraction) *api.InteractionResponse {
