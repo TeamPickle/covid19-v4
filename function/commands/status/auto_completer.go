@@ -30,7 +30,3 @@ func (*StatusAutoCompleter) Handle(ctx context.Context, data *discord.Autocomple
 		Data: &api.InteractionResponseData{Choices: choices},
 	}
 }
-
-func (*StatusAutoCompleter) Name() string {
-	return "status"
-}

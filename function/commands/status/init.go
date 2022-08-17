@@ -13,3 +13,7 @@ var _ base.AutoCompleter = (*StatusAutoCompleter)(nil)
 func (c *StatusCommand) Name() string {
 	return "status"
 }
+
+func (*StatusAutoCompleter) Name() string {
+	return "status"
+}
