@@ -39,6 +39,13 @@ func handler(ctx context.Context, request events.LambdaFunctionURLRequest) (even
 			}
 			return
 		}
+		if interaction.Data.InteractionType() == discord.AutocompleteInteractionType {
+			autoCompleteInteraction := interaction.Data.(*discord.AutocompleteInteraction)
+			if result := autoCompleteHandler.Handle(ctx, autoCompleteInteraction); result != nil {
+				response = result
+			}
+			return
+		}
 		return nil
 	}()
 	return responseOK(response)

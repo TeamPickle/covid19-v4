@@ -1,8 +1,8 @@
 package status
 
 import (
+	"context"
 	"encoding/json"
-	"fmt"
 	"io"
 	"net/http"
 	"regexp"
@@ -41,8 +41,10 @@ func findKoreanRegions(dict map[string]string) (result []string) {
 	return
 }
 
-func parseBoard() (*CoronaBoardData, error) {
-	resp, err := http.Get("https://coronaboard.kr")
+func parseBoard(ctx context.Context) (*CoronaBoardData, error) {
+	client := http.Client{}
+	req, _ := http.NewRequestWithContext(ctx, "GET", "https://coronaboard.kr", nil)
+	resp, err := client.Do(req)
 	if err != nil {
 		return nil, err
 	}
@@ -57,6 +59,5 @@ func parseBoard() (*CoronaBoardData, error) {
 
 	var data CoronaBoardData
 	json.Unmarshal(jsonBody, &data)
-	fmt.Println()
 	return &data, nil
 }

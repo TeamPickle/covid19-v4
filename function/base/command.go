@@ -7,7 +7,7 @@ import (
 	"github.com/diamondburned/arikawa/v3/discord"
 )
 
-type handlerFunc func(ctx context.Context, data *discord.CommandInteraction) *api.InteractionResponse
+type commandHandlerFunc func(ctx context.Context, data *discord.CommandInteraction) *api.InteractionResponse
 
 type Command interface {
 	Handle(ctx context.Context, data *discord.CommandInteraction) *api.InteractionResponse
@@ -20,11 +20,11 @@ type CommandHandler interface {
 }
 
 type commandHandler struct {
-	handlers map[string]handlerFunc
+	handlers map[string]commandHandlerFunc
 }
 
 func NewCommandHandler() CommandHandler {
-	return &commandHandler{handlers: map[string]handlerFunc{}}
+	return &commandHandler{handlers: map[string]commandHandlerFunc{}}
 }
 
 func (h *commandHandler) Register(commands ...Command) {
