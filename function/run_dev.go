@@ -6,6 +6,7 @@ import (
 	"context"
 	"encoding/json"
 	"function/config"
+	"function/utils"
 	"log"
 
 	"github.com/aws/aws-lambda-go/events"
@@ -24,14 +25,22 @@ func handler(ctx context.Context, request events.LambdaFunctionURLRequest) *api.
 		return &api.InteractionResponse{Type: api.PongInteraction}
 	}
 
-	if interaction.Data.InteractionType() == discord.CommandInteractionType {
-		commandInteraction := interaction.Data.(*discord.CommandInteraction)
-		if result := commandHandler.Handle(ctx, commandInteraction); result != nil {
-			return result
-		}
-	}
+	return func() (response *api.InteractionResponse) {
+		defer func() {
+			if r := recover(); r != nil {
+				response = utils.MakeErrorMessage(interaction, r)
+			}
+		}()
 
-	return nil
+		if interaction.Data.InteractionType() == discord.CommandInteractionType {
+			commandInteraction := interaction.Data.(*discord.CommandInteraction)
+			if result := commandHandler.Handle(ctx, commandInteraction); result != nil {
+				response = result
+			}
+			return response
+		}
+		return nil
+	}()
 }
 
 func run() {

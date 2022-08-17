@@ -4,6 +4,7 @@ package main
 
 import (
 	"context"
+	"function/utils"
 
 	"github.com/aws/aws-lambda-go/events"
 	"github.com/aws/aws-lambda-go/lambda"
@@ -24,14 +25,23 @@ func handler(ctx context.Context, request events.LambdaFunctionURLRequest) (even
 		return responseOK(&api.InteractionResponse{Type: api.PongInteraction})
 	}
 
-	if interaction.Data.InteractionType() == discord.CommandInteractionType {
-		commandInteraction := interaction.Data.(*discord.CommandInteraction)
-		if result := commandHandler.Handle(ctx, commandInteraction); result != nil {
-			return responseOK(result)
-		}
-	}
+	response := func() (response *api.InteractionResponse) {
+		defer func() {
+			if r := recover(); r != nil {
+				response = utils.MakeErrorMessage(interaction, r)
+			}
+		}()
 
-	return events.LambdaFunctionURLResponse{StatusCode: 404}, nil
+		if interaction.Data.InteractionType() == discord.CommandInteractionType {
+			commandInteraction := interaction.Data.(*discord.CommandInteraction)
+			if result := commandHandler.Handle(ctx, commandInteraction); result != nil {
+				response = result
+			}
+			return
+		}
+		return nil
+	}()
+	return responseOK(response)
 }
 
 func run() {

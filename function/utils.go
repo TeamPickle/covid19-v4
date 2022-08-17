@@ -23,6 +23,9 @@ func validateSignature(request events.LambdaFunctionURLRequest) bool {
 }
 
 func responseOK(data *api.InteractionResponse) (events.LambdaFunctionURLResponse, error) {
+	if data == nil {
+		return events.LambdaFunctionURLResponse{StatusCode: 404}, nil
+	}
 	messageBytes, _ := json.Marshal(data)
 	return events.LambdaFunctionURLResponse{StatusCode: 200, Body: string(messageBytes)}, nil
 }
