@@ -3,15 +3,23 @@ package status
 import (
 	"context"
 	"function/utils"
+	"strings"
 
 	"github.com/diamondburned/arikawa/v3/api"
 	"github.com/diamondburned/arikawa/v3/discord"
 	"github.com/diamondburned/arikawa/v3/utils/json/option"
 )
 
-func handleRegion(ctx context.Context) *api.InteractionResponse {
+func handleRegion(ctx context.Context, regionName string) *api.InteractionResponse {
+	boardData, err := parseBoard()
+	if err != nil {
+		panic("Can't parse board data")
+	}
+	regionName = aliasRegionName(regionName)
+	regionCode := findRegionName(boardData.I18NAll.Ko, regionName)
+
 	return utils.MessageInteractionResponseWithSource(&api.InteractionResponseData{
-		Content: option.NewNullableString("지역 현황"),
+		Content: option.NewNullableString("지역 현황 " + regionName + regionCode + "  " + strings.Join(findKoreanRegions(boardData.I18NAll.Ko), ", ")),
 	})
 }
 
@@ -32,5 +40,5 @@ func (c *StatusCommand) Handle(ctx context.Context, interaction *discord.Command
 	if len(interaction.Options) == 0 {
 		return handleDomestic(ctx)
 	}
-	return handleRegion(ctx)
+	return handleRegion(ctx, interaction.Options[0].String())
 }
