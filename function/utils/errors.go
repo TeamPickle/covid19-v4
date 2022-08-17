@@ -23,7 +23,6 @@ func MakeErrorMessage(req discord.InteractionEvent, recoverError any) *api.Inter
 	} else {
 		err = errors.New("unknown error")
 	}
-	client := webhook.New(config.LogWebhookID, config.LogWebhookToken)
 	codeBytes := make([]byte, 8)
 	rand.Read(codeBytes)
 	code := strings.ToLower(base36.EncodeBytes(codeBytes))
@@ -38,6 +37,7 @@ func MakeErrorMessage(req discord.InteractionEvent, recoverError any) *api.Inter
 		commandName = fmt.Sprintf("%s%s", command.Name, arguments)
 	}
 
+	client := webhook.New(config.LogWebhookID, config.LogWebhookToken)
 	client.Execute(webhook.ExecuteData{
 		Content: fmt.Sprintf(""+
 			"오류가 발생했습니다.\n"+
