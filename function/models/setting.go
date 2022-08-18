@@ -1,10 +1,12 @@
 package models
 
 import (
+	"context"
 	"function/database"
 	"time"
 
 	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
 var (
@@ -30,4 +32,20 @@ func (s *SettingUpdateProps) MarshalBSON() ([]byte, error) {
 
 	type my SettingUpdateProps
 	return bson.Marshal((*my)(s))
+}
+
+func GetChannelIDSetting(ctx context.Context, guildIDString string) (channelIDString string) {
+	settingUpdate := SettingUpdateProps{}
+	Setting.FindOne(ctx, bson.M{"_id": guildIDString}).Decode(&settingUpdate)
+	return settingUpdate.Channel
+}
+
+func UpdateChannelIDSetting(ctx context.Context, guildIDString, channelIDString string) {
+	settingUpdate := SettingUpdateProps{}
+	Setting.FindOne(ctx, bson.M{"_id": guildIDString}).Decode(&settingUpdate)
+	settingUpdate.Channel = channelIDString
+	_, err := Setting.ReplaceOne(ctx, bson.M{"_id": guildIDString}, &settingUpdate, options.Replace().SetUpsert(true))
+	if err != nil {
+		panic(err)
+	}
 }
