@@ -3,8 +3,10 @@ package main
 import (
 	"function/base"
 	"function/commands/disaster"
+	"function/commands/location"
 	"function/commands/status"
 	"function/commands/world"
+	"function/database"
 )
 
 var (
@@ -19,14 +21,17 @@ func main() {
 		&status.StatusCommand{},
 		&disaster.DisasterCommand{},
 		&world.WorldCommand{},
+		&location.LocationCommand{},
 	)
 	autoCompleteHandler = base.NewAutoCompleteHandler()
 	autoCompleteHandler.Register(
 		&status.StatusAutoCompleter{},
+		&location.LocationAutoCompleter{},
 	)
 	componentHandler = base.NewComponentHandler()
 	componentHandler.Register(
 		&world.WorldComponent{},
 	)
+	database.Connect()
 	run()
 }
