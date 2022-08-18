@@ -16,7 +16,6 @@ type mainData struct {
 	death          int64
 	deathDelta     int64
 	countries      int64
-	totalPages     int
 }
 
 func makeMainEmbed(data *mainData) discord.Embed {
@@ -27,14 +26,12 @@ func makeMainEmbed(data *mainData) discord.Embed {
 			"<:nujeok:687907310923677943> 확진자 : %s(%s)\n"+
 			"<:wanchi:687907312052076594> 완치 : %s(%s)\n"+
 			"<:samang:687907312123510817> 사망 : %s(%s)\n"+
-			"🚩 발생국 : %s\n"+
-			"(1/%d)",
+			"🚩 발생국 : %s",
 			humanize.Comma(data.active),
 			humanize.Comma(data.confirmed), humanize.Comma(data.confirmedDelta),
 			humanize.Comma(data.released), humanize.Comma(data.releasedDelta),
 			humanize.Comma(data.death), humanize.Comma(data.deathDelta),
 			humanize.Comma(data.countries),
-			data.totalPages,
 		),
 		Color: 0x00cccc,
 	}
