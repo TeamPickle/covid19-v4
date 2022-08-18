@@ -46,6 +46,13 @@ func handler(ctx context.Context, request events.LambdaFunctionURLRequest) (even
 			}
 			return
 		}
+		if interaction.Data.InteractionType() == discord.ComponentInteractionType {
+			componentInteraction := interaction.Data.(discord.ComponentInteraction)
+			if result := componentHandler.Handle(ctx, componentInteraction, interaction); result != nil {
+				response = result
+			}
+			return
+		}
 		return nil
 	}()
 	return responseOK(response)

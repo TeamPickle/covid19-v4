@@ -34,10 +34,9 @@ func (h *commandHandler) Register(commands ...Command) {
 }
 
 func (h *commandHandler) Handle(ctx context.Context, data *discord.CommandInteraction, rawRequest discord.InteractionEvent) *api.InteractionResponse {
-	for k, hf := range h.handlers {
-		if data.Name == k {
-			return hf(ctx, data, rawRequest)
-		}
+	handler := h.handlers[data.Name]
+	if handler == nil {
+		return nil
 	}
-	return nil
+	return convertCustomID(data.Name, handler(ctx, data, rawRequest), rawRequest)
 }
