@@ -131,8 +131,8 @@ func main() {
 				OptionNameLocalizations: discord.StringLocales{
 					discord.Korean: "채널",
 				},
-				Description:  "채널명",
-				Required:     true,
+				Description:  "채널명. 입력하지 않으면 현재 사용중인 채널 이름이 표시됩니다.",
+				Required:     false,
 				ChannelTypes: []discord.ChannelType{discord.GuildNews, discord.GuildText},
 			},
 		},
