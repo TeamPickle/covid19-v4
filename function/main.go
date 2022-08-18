@@ -3,6 +3,7 @@ package main
 import (
 	"function/base"
 	"function/commands/disaster"
+	"function/commands/graphic"
 	"function/commands/location"
 	"function/commands/status"
 	"function/commands/world"
@@ -22,6 +23,7 @@ func main() {
 		&disaster.DisasterCommand{},
 		&world.WorldCommand{},
 		&location.LocationCommand{},
+		&graphic.GraphicCommand{},
 	)
 	autoCompleteHandler = base.NewAutoCompleteHandler()
 	autoCompleteHandler.Register(

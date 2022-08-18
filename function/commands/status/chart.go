@@ -10,16 +10,13 @@ import (
 
 	"github.com/diamondburned/arikawa/v3/api/webhook"
 	"github.com/diamondburned/arikawa/v3/utils/sendpart"
-	"github.com/golang/freetype/truetype"
 	"github.com/wcharczuk/go-chart"
 	"github.com/wcharczuk/go-chart/drawing"
 )
 
 func generateChart(data []*nCovData) io.Reader {
-	fontFile, _ := resources.Asset("PretendardVariable.ttf")
-	font, _ := truetype.Parse(fontFile)
 	graph := chart.Chart{
-		Font: font,
+		Font: resources.Pretendard,
 		Series: []chart.Series{
 			chart.TimeSeries{
 				Name: "확진자",
@@ -67,7 +64,7 @@ func generateChart(data []*nCovData) io.Reader {
 	}
 	graph.Elements = append(
 		graph.Elements,
-		chart.Legend(&graph, chart.Style{Font: font}),
+		chart.Legend(&graph, chart.Style{Font: resources.Pretendard}),
 	)
 	buffer := bytes.NewBuffer(nil)
 	graph.Render(chart.PNG, buffer)

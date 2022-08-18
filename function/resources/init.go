@@ -1,8 +1,16 @@
 package resources
 
-import _ "embed"
+import (
+	"embed"
+
+	"github.com/golang/freetype/truetype"
+)
 
 var (
 	//go:embed PretendardVariable.ttf
-	PretendardedVariable []byte
+	pretendardedVariable []byte
+	Pretendard, _        = truetype.Parse(pretendardedVariable)
+
+	//go:embed graphic
+	GraphicImages embed.FS
 )
