@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"log"
 	"register/config"
 
@@ -52,16 +51,14 @@ func init() {
 }
 
 func addCommand(data api.CreateCommandData) {
-	if config.TestGuildId == discord.NullGuildID {
-		if _, err := client.CreateCommand(config.AppID, data); err != nil {
-			panic(err)
-		}
-	} else {
-		if command, err := client.CreateGuildCommand(config.AppID, config.TestGuildId, data); err != nil {
-			panic(err)
-		} else {
-			fmt.Println(command)
-		}
+	if _, err := client.CreateCommand(config.AppID, data); err != nil {
+		panic(err)
+	}
+}
+
+func addGuildCommand(data api.CreateCommandData) {
+	if _, err := client.CreateGuildCommand(config.AppID, config.TestGuildId, data); err != nil {
+		panic(err)
 	}
 }
 
@@ -144,6 +141,25 @@ func main() {
 		Description:              "특정 지역의 재난문자를 불러옵니다.",
 		Options:                  discord.CommandOptions{&provinceOption},
 		DefaultMemberPermissions: discord.NewPermissions(discord.PermissionAdministrator),
+	})
+	addGuildCommand(api.CreateCommandData{
+		Name:        "send",
+		Description: "전체공지를 전송합니다.",
+		Options: discord.CommandOptions{
+			&discord.StringOption{
+				OptionName:  "type",
+				Description: "공지 타입",
+				Required:    true,
+				Choices: []discord.StringChoice{
+					{Name: "속보", Value: "속보"},
+					{Name: "뉴스", Value: "뉴스"},
+					{Name: "해외", Value: "해외"},
+					{Name: "확진", Value: "확진"},
+					{Name: "사망", Value: "사망"},
+					{Name: "전체공지", Value: "전체공지"},
+				},
+			},
+		},
 	})
 	log.Println("Done.")
 }
