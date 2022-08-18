@@ -10,6 +10,7 @@ import (
 var (
 	commandHandler      base.CommandHandler
 	autoCompleteHandler base.AutoCompleteHandler
+	componentHandler    base.ComponentHandler
 )
 
 func main() {
@@ -22,6 +23,10 @@ func main() {
 	autoCompleteHandler = base.NewAutoCompleteHandler()
 	autoCompleteHandler.Register(
 		&status.StatusAutoCompleter{},
+	)
+	componentHandler = base.NewComponentHandler()
+	componentHandler.Register(
+		&world.WorldComponent{},
 	)
 	run()
 }

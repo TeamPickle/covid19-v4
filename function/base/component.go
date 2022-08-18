@@ -4,7 +4,9 @@ import (
 	"context"
 	"fmt"
 	"function/utils"
+	"reflect"
 	"strings"
+	"unsafe"
 
 	"github.com/diamondburned/arikawa/v3/api"
 	"github.com/diamondburned/arikawa/v3/discord"
@@ -59,10 +61,12 @@ func (h *componentHandler) Handle(ctx context.Context, data discord.ComponentInt
 		return nil
 	}
 
-	if data.Type() == discord.ButtonComponentType {
-		buttonInteraction := data.(*discord.ButtonInteraction)
-		buttonInteraction.CustomID = discord.ComponentID(action)
-	}
+	dataValue := reflect.ValueOf(data)
+	dataIndirect := reflect.Indirect(dataValue)
+	idField := dataIndirect.FieldByName("id")
+	pointer := unsafe.Pointer(idField.Addr().Pointer())
+	idPointer := (*string)(pointer)
+	*idPointer = action
 
 	return convertCustomID(name, handler(ctx, data, rawRequest), rawRequest)
 }

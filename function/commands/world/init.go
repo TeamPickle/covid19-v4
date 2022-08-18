@@ -2,21 +2,18 @@ package world
 
 import (
 	"function/base"
-	"function/config"
-
-	"github.com/diamondburned/arikawa/v3/api"
 )
 
 type WorldCommand struct{}
+type WorldComponent struct{}
 
 var _ base.Command = (*WorldCommand)(nil)
+var _ base.Component = (*WorldComponent)(nil)
 
 func (c *WorldCommand) Name() string {
 	return "world"
 }
 
-var client *api.Client
-
-func init() {
-	client = api.NewClient("Bot " + config.Token)
+func (c *WorldComponent) Name() string {
+	return "world"
 }

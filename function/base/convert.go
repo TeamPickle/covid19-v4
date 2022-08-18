@@ -28,6 +28,9 @@ func convertComponent(components *discord.ContainerComponents, prefix string) *d
 func convertCustomID(name string, result *api.InteractionResponse, rawRequest discord.InteractionEvent) *api.InteractionResponse {
 	userID := rawRequest.SenderID()
 	customIDPrefix := fmt.Sprintf("%s:%s:", name, userID)
+	if result == nil || result.Data == nil {
+		return result
+	}
 	if result.Data.CustomID != nil {
 		result.Data.CustomID.Val = customIDPrefix + result.Data.CustomID.Val
 	}

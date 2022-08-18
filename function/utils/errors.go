@@ -36,6 +36,17 @@ func MakeErrorMessage(req discord.InteractionEvent, recoverError any) *api.Inter
 		}
 		commandName = fmt.Sprintf("%s%s", command.Name, arguments)
 	}
+	if req.Data.InteractionType() == discord.ComponentInteractionType {
+		component := req.Data.(discord.ComponentInteraction)
+		if component.Type() == discord.ButtonComponentType {
+			button := component.(*discord.ButtonInteraction)
+			commandName = string(button.CustomID)
+		}
+		if component.Type() == discord.SelectComponentType {
+			component := component.(*discord.SelectInteraction)
+			commandName = string(component.CustomID) + ": " + strings.Join(component.Values, ", ")
+		}
+	}
 
 	client := webhook.New(config.LogWebhookID, config.LogWebhookToken)
 	client.Execute(webhook.ExecuteData{

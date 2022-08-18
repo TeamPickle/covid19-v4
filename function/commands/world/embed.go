@@ -37,19 +37,30 @@ func makeMainEmbed(data *mainData) discord.Embed {
 	}
 }
 
-func makeDetailedEmbed() discord.Embed {
+type detailData struct {
+	flag        string
+	countryName string
+	confirmed   int64
+	released    int64
+	death       int64
+}
+
+func makeDetailedEmbed(data []*detailData) discord.Embed {
 	embed := discord.Embed{
 		Title: "🗺️ 세계 코로나 현황",
 		Color: 0x00cccc,
 	}
-	for _, status := range []string{"confirmed", "released", "death"} {
+	for _, status := range data {
 		embed.Description += fmt.Sprintf(""+
-			"%s **%s** :\n"+
-			"<:nujeok:687907310923677943> %s\n"+
-			"<:wanchi:687907312052076594> %s\n"+
+			"%s **%s** : "+
+			"<:nujeok:687907310923677943> %s / "+
+			"<:wanchi:687907312052076594> %s /"+
 			"<:samang:687907312123510817> %s\n",
-			status, "", "", "", "")
+			status.flag, status.countryName,
+			humanize.Comma(status.confirmed),
+			humanize.Comma(status.released),
+			humanize.Comma(status.death),
+		)
 	}
-	embed.Description += fmt.Sprintf("(1/%d)", 1)
 	return embed
 }
