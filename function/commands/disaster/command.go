@@ -66,8 +66,12 @@ func (*DisasterCommand) Handle(ctx context.Context, data *discord.CommandInterac
 	}
 
 	for i := 0; i < 5; i++ {
+		name := fmt.Sprintf("%s(%s)", local[i][1], datetime[i][1])
+		if len(name) > 100 {
+			name = name[:99] + "…"
+		}
 		embed.Fields = append(embed.Fields, discord.EmbedField{
-			Name:  fmt.Sprintf("%s(%s)", local[i][1], datetime[i][1]),
+			Name:  name,
 			Value: con[i][1],
 		})
 	}
