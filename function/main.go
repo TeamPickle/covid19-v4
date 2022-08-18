@@ -6,18 +6,19 @@ import (
 	"function/commands/disaster"
 	"function/commands/graphic"
 	"function/commands/location"
+	"function/commands/send"
 	"function/commands/status"
 	"function/commands/world"
 )
 
 var (
-	commandHandler      base.CommandHandler
-	autoCompleteHandler base.AutoCompleteHandler
-	componentHandler    base.ComponentHandler
+	commandHandler      = base.NewCommandHandler()
+	autoCompleteHandler = base.NewAutoCompleteHandler()
+	componentHandler    = base.NewComponentHandler()
+	modalHandler        = base.NewModalHandler()
 )
 
 func main() {
-	commandHandler = base.NewCommandHandler()
 	commandHandler.Register(
 		&status.StatusCommand{},
 		&disaster.DisasterCommand{},
@@ -25,15 +26,19 @@ func main() {
 		&location.LocationCommand{},
 		&graphic.GraphicCommand{},
 		&channel.ChannelCommand{},
+		&send.SendCommand{},
 	)
-	autoCompleteHandler = base.NewAutoCompleteHandler()
 	autoCompleteHandler.Register(
 		&status.StatusAutoCompleter{},
 		&location.LocationAutoCompleter{},
 	)
-	componentHandler = base.NewComponentHandler()
 	componentHandler.Register(
 		&world.WorldComponent{},
+		&send.SendComponent{},
 	)
+	modalHandler.Register(
+		&send.SendModal{},
+	)
+
 	run()
 }

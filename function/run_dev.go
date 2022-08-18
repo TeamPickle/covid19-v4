@@ -53,6 +53,13 @@ func handler(ctx context.Context, request events.LambdaFunctionURLRequest) *api.
 			}
 			return
 		}
+		if interaction.Data.InteractionType() == discord.ModalInteractionType {
+			componentInteraction := interaction.Data.(*discord.ModalInteraction)
+			if result := modalHandler.Handle(ctx, *componentInteraction, interaction); result != nil {
+				response = result
+			}
+			return
+		}
 		return nil
 	}()
 }

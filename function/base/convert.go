@@ -35,7 +35,7 @@ func convertCustomID(name string, result *api.InteractionResponse, rawRequest di
 		return result
 	}
 	if result.Data.CustomID != nil {
-		result.Data.CustomID.Val = customIDPrefix + result.Data.CustomID.Val
+		result.Data.CustomID.Val = name + ":" + result.Data.CustomID.Val
 	}
 	convertComponent(result.Data.Components, customIDPrefix)
 	return result
