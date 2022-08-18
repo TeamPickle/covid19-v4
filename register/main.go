@@ -66,6 +66,10 @@ func addCommand(data api.CreateCommandData) {
 }
 
 func main() {
+	// cmds, _ := client.GuildCommands(config.AppID, config.TestGuildId)
+	// for _, cmd := range cmds {
+	// 	client.DeleteGuildCommand(config.AppID, config.TestGuildId, cmd.ID)
+	// }
 	log.Println("Registering commands...")
 	addCommand(api.CreateCommandData{
 		Name: "status",
@@ -122,7 +126,15 @@ func main() {
 		},
 		Description: "뉴스 및 전체공지를 전송하는 채널을 설정합니다.",
 		Options: discord.CommandOptions{
-			discord.NewChannelOption("name", "채널명", true),
+			&discord.ChannelOption{
+				OptionName: "channel",
+				OptionNameLocalizations: discord.StringLocales{
+					discord.Korean: "채널",
+				},
+				Description:  "채널명",
+				Required:     true,
+				ChannelTypes: []discord.ChannelType{discord.GuildNews, discord.GuildText},
+			},
 		},
 		DefaultMemberPermissions: discord.NewPermissions(discord.PermissionAdministrator),
 	})

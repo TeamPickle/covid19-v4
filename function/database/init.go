@@ -3,25 +3,33 @@ package database
 import (
 	"context"
 	"function/config"
+	"time"
 
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
 var (
-	database *mongo.Database
+	Client   *mongo.Client
+	Database *mongo.Database
 )
 
 const (
 	databaseName = "covid19"
 )
 
-func Connect() {
-	client, err := mongo.Connect(context.Background(), options.Client().ApplyURI(config.MongoDBURL))
-	if err != nil {
+func init() {
+	timeout, cancel := context.WithTimeout(context.Background(), time.Second*10)
+	defer cancel()
+
+	var err error
+	if Client, err = mongo.Connect(timeout, options.Client().ApplyURI(config.MongoDBURL)); err != nil {
 		panic(err)
 	}
 
-	database = client.Database(databaseName)
-	Location = database.Collection(locationCollectionName)
+	if err = Client.Ping(timeout, nil); err != nil {
+		panic(err)
+	}
+
+	Database = Client.Database(databaseName)
 }

@@ -1,18 +1,14 @@
-package database
+package models
 
 import (
+	"function/database"
 	"time"
 
 	"go.mongodb.org/mongo-driver/bson"
-	"go.mongodb.org/mongo-driver/mongo"
 )
 
 var (
-	Location *mongo.Collection
-)
-
-const (
-	locationCollectionName = "locations"
+	Location = database.Database.Collection("locations")
 )
 
 type LocationUpdateProps struct {

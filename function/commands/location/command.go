@@ -3,7 +3,7 @@ package location
 import (
 	"context"
 	"fmt"
-	"function/database"
+	"function/models"
 	"function/utils"
 
 	"github.com/diamondburned/arikawa/v3/api"
@@ -16,13 +16,10 @@ import (
 func (*LocationCommand) Handle(ctx context.Context, data *discord.CommandInteraction, rawRequest discord.InteractionEvent) *api.InteractionResponse {
 	province := data.Options.Find("province")
 	city := data.Options.Find("city")
-	result := database.Location.FindOne(ctx, bson.M{"_id": rawRequest.SenderID().String()})
-	userLocation := database.LocationUpdateProps{}
-	if result.Err() == nil {
-		result.Decode(&userLocation)
-	}
+	userLocation := models.LocationUpdateProps{}
+	models.Location.FindOne(ctx, bson.M{"_id": rawRequest.SenderID().String()}).Decode(&userLocation)
 	userLocation.Location = fmt.Sprintf("%s %s", province.String(), city.String())
-	_, err := database.Location.ReplaceOne(ctx, bson.M{"_id": rawRequest.SenderID().String()}, &userLocation, options.Replace().SetUpsert(true))
+	_, err := models.Location.ReplaceOne(ctx, bson.M{"_id": rawRequest.SenderID().String()}, &userLocation, options.Replace().SetUpsert(true))
 	if err != nil {
 		panic(err)
 	}
