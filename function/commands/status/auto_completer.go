@@ -2,6 +2,7 @@ package status
 
 import (
 	"context"
+	"function/external/coronaboard"
 	"strings"
 	"unicode/utf8"
 
@@ -10,7 +11,7 @@ import (
 )
 
 func (*StatusAutoCompleter) Handle(ctx context.Context, data *discord.AutocompleteInteraction) *api.InteractionResponse {
-	boardData, err := parseBoard(ctx)
+	boardData, err := coronaboard.ParseBoard(ctx)
 	if err != nil {
 		panic("Can't parse board data")
 	}

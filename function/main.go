@@ -4,6 +4,7 @@ import (
 	"function/base"
 	"function/commands/disaster"
 	"function/commands/status"
+	"function/commands/world"
 )
 
 var (
@@ -16,6 +17,7 @@ func main() {
 	commandHandler.Register(
 		&status.StatusCommand{},
 		&disaster.DisasterCommand{},
+		&world.WorldCommand{},
 	)
 	autoCompleteHandler = base.NewAutoCompleteHandler()
 	autoCompleteHandler.Register(

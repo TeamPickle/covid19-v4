@@ -1,6 +1,6 @@
-package status
+package coronaboard
 
-type globalNowStatus struct {
+type GlobalNowStatus struct {
 	Cc              string `json:"cc"`
 	Confirmed       int64  `json:"confirmed"`
 	Death           int64  `json:"death"`
@@ -36,7 +36,7 @@ type globalNowStatus struct {
 	VaccinatedFully int64  `json:"vaccinatedFully,omitempty"`
 }
 
-type domesticNowStatus struct {
+type DomesticNowStatus struct {
 	Region              string `json:"region"`
 	Confirmed           int64  `json:"confirmed,omitempty"`
 	Death               int64  `json:"death,omitempty"`
@@ -56,8 +56,8 @@ type domesticNowStatus struct {
 
 type CoronaBoardData struct {
 	LastUpdated     int                 `json:"lastUpdated"`
-	StatGlobalNow   []globalNowStatus   `json:"statGlobalNow"`
-	StatDomesticNow []domesticNowStatus `json:"statDomesticNow"`
+	StatGlobalNow   []GlobalNowStatus   `json:"statGlobalNow"`
+	StatDomesticNow []DomesticNowStatus `json:"statDomesticNow"`
 	ChartForGlobal  struct {
 		Kr struct {
 			Date         []string      `json:"date"`
@@ -73,14 +73,14 @@ type CoronaBoardData struct {
 		} `json:"KR"`
 		Global struct {
 			Date         []string      `json:"date"`
-			Active       []int         `json:"active"`
-			ConfirmedAcc []int         `json:"confirmed_acc"`
-			DeathAcc     []int         `json:"death_acc"`
-			ReleasedAcc  []int         `json:"released_acc"`
+			Active       []int64       `json:"active"`
+			ConfirmedAcc []int64       `json:"confirmed_acc"`
+			DeathAcc     []int64       `json:"death_acc"`
+			ReleasedAcc  []int64       `json:"released_acc"`
 			CriticalAcc  []interface{} `json:"critical_acc"`
-			Confirmed    []int         `json:"confirmed"`
-			Death        []int         `json:"death"`
-			Released     []int         `json:"released"`
+			Confirmed    []int64       `json:"confirmed"`
+			Death        []int64       `json:"death"`
+			Released     []int64       `json:"released"`
 			Critical     []interface{} `json:"critical"`
 		} `json:"global"`
 	} `json:"chartForGlobal"`

@@ -3,6 +3,7 @@ package status
 import (
 	"context"
 	"fmt"
+	"function/external/coronaboard"
 	"function/utils"
 	"strings"
 
@@ -12,8 +13,8 @@ import (
 	"github.com/dustin/go-humanize"
 )
 
-func handleDomesticRegion(ctx context.Context, regionName string, boardData *CoronaBoardData) *api.InteractionResponse {
-	var status *domesticNowStatus
+func handleDomesticRegion(ctx context.Context, regionName string, boardData *coronaboard.CoronaBoardData) *api.InteractionResponse {
+	var status *coronaboard.DomesticNowStatus
 	for _, v := range boardData.StatDomesticNow {
 		if v.Region == regionName {
 			status = &v
@@ -43,8 +44,8 @@ func handleDomesticRegion(ctx context.Context, regionName string, boardData *Cor
 	})
 }
 
-func handleForeignRegion(ctx context.Context, regionCode, regionName string, boardData *CoronaBoardData) *api.InteractionResponse {
-	var status *globalNowStatus
+func handleForeignRegion(ctx context.Context, regionCode, regionName string, boardData *coronaboard.CoronaBoardData) *api.InteractionResponse {
+	var status *coronaboard.GlobalNowStatus
 	for _, v := range boardData.StatGlobalNow {
 		if v.Cc == regionCode {
 			status = &v
@@ -78,7 +79,7 @@ func handleForeignRegion(ctx context.Context, regionCode, regionName string, boa
 }
 
 func handleRegion(ctx context.Context, regionName string) *api.InteractionResponse {
-	boardData, err := parseBoard(ctx)
+	boardData, err := coronaboard.ParseBoard(ctx)
 	if err != nil {
 		panic("Can't parse board data")
 	}
@@ -113,7 +114,7 @@ func handleDomestic(ctx context.Context) *api.InteractionResponse {
 	})
 }
 
-func (c *StatusCommand) Handle(ctx context.Context, interaction *discord.CommandInteraction) *api.InteractionResponse {
+func (c *StatusCommand) Handle(ctx context.Context, interaction *discord.CommandInteraction, rawRequest discord.InteractionEvent) *api.InteractionResponse {
 	if len(interaction.Options) == 0 {
 		return handleDomestic(ctx)
 	}

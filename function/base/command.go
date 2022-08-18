@@ -7,16 +7,16 @@ import (
 	"github.com/diamondburned/arikawa/v3/discord"
 )
 
-type commandHandlerFunc func(ctx context.Context, data *discord.CommandInteraction) *api.InteractionResponse
+type commandHandlerFunc func(ctx context.Context, data *discord.CommandInteraction, rawRequest discord.InteractionEvent) *api.InteractionResponse
 
 type Command interface {
-	Handle(ctx context.Context, data *discord.CommandInteraction) *api.InteractionResponse
+	Handle(ctx context.Context, data *discord.CommandInteraction, rawRequest discord.InteractionEvent) *api.InteractionResponse
 	Name() string
 }
 
 type CommandHandler interface {
 	Register(commands ...Command)
-	Handle(ctx context.Context, data *discord.CommandInteraction) *api.InteractionResponse
+	Handle(ctx context.Context, data *discord.CommandInteraction, rawRequest discord.InteractionEvent) *api.InteractionResponse
 }
 
 type commandHandler struct {
@@ -33,10 +33,10 @@ func (h *commandHandler) Register(commands ...Command) {
 	}
 }
 
-func (h *commandHandler) Handle(ctx context.Context, data *discord.CommandInteraction) *api.InteractionResponse {
+func (h *commandHandler) Handle(ctx context.Context, data *discord.CommandInteraction, rawRequest discord.InteractionEvent) *api.InteractionResponse {
 	for k, hf := range h.handlers {
 		if data.Name == k {
-			return hf(ctx, data)
+			return hf(ctx, data, rawRequest)
 		}
 	}
 	return nil

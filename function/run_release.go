@@ -34,7 +34,7 @@ func handler(ctx context.Context, request events.LambdaFunctionURLRequest) (even
 
 		if interaction.Data.InteractionType() == discord.CommandInteractionType {
 			commandInteraction := interaction.Data.(*discord.CommandInteraction)
-			if result := commandHandler.Handle(ctx, commandInteraction); result != nil {
+			if result := commandHandler.Handle(ctx, commandInteraction, interaction); result != nil {
 				response = result
 			}
 			return

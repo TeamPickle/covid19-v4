@@ -75,7 +75,7 @@ const location = await getLocation(msg.author.id, args[1]);
     return msg.respond({ embeds: [embed] });
 */
 
-func (*DisasterCommand) Handle(ctx context.Context, data *discord.CommandInteraction) *api.InteractionResponse {
+func (*DisasterCommand) Handle(ctx context.Context, data *discord.CommandInteraction, rawRequest discord.InteractionEvent) *api.InteractionResponse {
 	region := data.Options.Find("province").String()
 	regionIndex := -1
 	for i, r := range regions {
