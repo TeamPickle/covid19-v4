@@ -8,6 +8,9 @@ import (
 )
 
 func convertComponent(components *discord.ContainerComponents, prefix string) *discord.ContainerComponents {
+	if components == nil {
+		return nil
+	}
 	for _, component := range *components {
 		if component.Type() == discord.ActionRowComponentType {
 			actionRowComponent := component.(*discord.ActionRowComponent)
