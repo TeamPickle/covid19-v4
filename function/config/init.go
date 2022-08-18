@@ -12,6 +12,7 @@ var (
 	OpenAPIkey      string
 	LogWebhookID    discord.WebhookID = discord.NullWebhookID
 	LogWebhookToken string
+	MongoDBURL      string
 )
 
 func init() {
@@ -25,4 +26,7 @@ func init() {
 		LogWebhookID = discord.WebhookID(channelID)
 	}
 	LogWebhookToken = os.Getenv("LOG_WEBHOOK_TOKEN")
+	if MongoDBURL = os.Getenv("MONGO_DB_URL"); MongoDBURL == "" {
+		panic("MONGO_DB_URL is not set")
+	}
 }
