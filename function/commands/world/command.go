@@ -12,6 +12,6 @@ func (c *WorldCommand) Handle(ctx context.Context, data *discord.CommandInteract
 	embedData, totalPages := getMainData(ctx)
 	return utils.MessageInteractionResponseWithSource(&api.InteractionResponseData{
 		Embeds:     &[]discord.Embed{makeMainEmbed(&embedData)},
-		Components: makeComponents(1, totalPages),
+		Components: makeComponents(0, totalPages),
 	})
 }
