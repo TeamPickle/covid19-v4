@@ -1,8 +1,8 @@
 package main
 
 import (
+	"activity/models"
 	"context"
-	"function/models"
 	"sort"
 	"sync"
 
