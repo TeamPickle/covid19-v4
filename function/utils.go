@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/hex"
 	"encoding/json"
+	"function/config"
 
 	"github.com/aws/aws-lambda-go/events"
 	"github.com/diamondburned/arikawa/v3/api"
@@ -15,7 +16,7 @@ func validateSignature(request events.LambdaFunctionURLRequest) bool {
 	strBody := request.Body
 
 	signedMessage, _ := hex.DecodeString(signature)
-	publicKeyByteSlice, _ := hex.DecodeString("<PUBLIC KEY>")
+	publicKeyByteSlice, _ := hex.DecodeString(config.PublicKey)
 
 	signedMessage = append(signedMessage, []byte(timestamp+strBody)...)
 	_, isVerified := sign.Open(nil, signedMessage, (*[32]byte)(publicKeyByteSlice))
