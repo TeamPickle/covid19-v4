@@ -161,5 +161,9 @@ func main() {
 			},
 		},
 	})
+	addGuildCommand(api.CreateCommandData{
+		Name:        "info",
+		Description: "세션 봇 상태 확인",
+	})
 	log.Println("Done.")
 }

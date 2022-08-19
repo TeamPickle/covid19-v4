@@ -14,6 +14,7 @@ var (
 	LogWebhookToken string
 	MongoDBURL      string
 	PublicKey       string
+	ActivityBaseURL string
 )
 
 func init() {
@@ -29,4 +30,5 @@ func init() {
 		panic("MONGO_DB_URL is not set")
 	}
 	PublicKey = os.Getenv("VALIDATE_PUBLIC_KEY")
+	ActivityBaseURL = os.Getenv("ACTIVITY_BASE_URL")
 }
