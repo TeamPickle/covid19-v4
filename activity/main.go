@@ -1,6 +1,7 @@
 package main
 
 import (
+	"activity/cron"
 	"context"
 	"fmt"
 	"function/config"
@@ -8,12 +9,14 @@ import (
 	"net/http"
 
 	"github.com/diamondburned/arikawa/v3/discord"
+	"github.com/diamondburned/arikawa/v3/gateway"
 	"github.com/diamondburned/arikawa/v3/session"
 	"github.com/gin-gonic/gin"
 )
 
 func main() {
 	s := session.New("Bot " + config.Token)
+	s.AddIntents(gateway.IntentDirectMessages)
 	if err := s.Open(context.Background()); err != nil {
 		log.Fatalln("failed to open:", err)
 	}
@@ -42,5 +45,6 @@ func main() {
 		c.JSON(http.StatusOK, gin.H{})
 	})
 
+	go cron.Start(s)
 	r.Run()
 }
