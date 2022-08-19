@@ -5,6 +5,7 @@ import (
 	"function/database"
 	"time"
 
+	"github.com/diamondburned/arikawa/v3/discord"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
@@ -38,6 +39,14 @@ func GetChannelIDSetting(ctx context.Context, guildIDString string) (channelIDSt
 	settingUpdate := SettingUpdateProps{}
 	Setting.FindOne(ctx, bson.M{"_id": guildIDString}).Decode(&settingUpdate)
 	return settingUpdate.Channel
+}
+
+func GetChannelIDSettingSnowflake(ctx context.Context, guildIDString string) (channelID discord.ChannelID) {
+	snowflake, err := discord.ParseSnowflake(GetChannelIDSetting(ctx, guildIDString))
+	if err != nil {
+		return discord.NullChannelID
+	}
+	return discord.ChannelID(snowflake)
 }
 
 func UpdateChannelIDSetting(ctx context.Context, guildIDString, channelIDString string) {
