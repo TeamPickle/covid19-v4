@@ -1,8 +1,8 @@
 package models
 
 import (
+	"activity/database"
 	"context"
-	"function/database"
 	"time"
 
 	"github.com/diamondburned/arikawa/v3/discord"

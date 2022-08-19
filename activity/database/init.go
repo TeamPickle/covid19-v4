@@ -1,8 +1,8 @@
 package database
 
 import (
+	"activity/config"
 	"context"
-	"function/config"
 	"time"
 
 	"go.mongodb.org/mongo-driver/mongo"
