@@ -13,12 +13,11 @@ var (
 	LogWebhookID    discord.WebhookID = discord.NullWebhookID
 	LogWebhookToken string
 	MongoDBURL      string
+	PublicKey       string
 )
 
 func init() {
-	if err := godotenv.Load(); err != nil {
-		panic(err)
-	}
+	godotenv.Load()
 
 	Token = os.Getenv("BOT_TOKEN")
 	OpenAPIkey = os.Getenv("OPEN_API_KEY")
@@ -29,4 +28,5 @@ func init() {
 	if MongoDBURL = os.Getenv("MONGO_DB_URL"); MongoDBURL == "" {
 		panic("MONGO_DB_URL is not set")
 	}
+	PublicKey = os.Getenv("VALIDATE_PUBLIC_KEY")
 }
