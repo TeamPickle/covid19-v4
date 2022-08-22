@@ -53,5 +53,5 @@ func main() {
 	})
 
 	go cron.Start(m)
-	r.Run()
+	r.Run("0.0.0.0:" + config.Port)
 }
