@@ -27,10 +27,10 @@ func handleDomesticRegion(ctx context.Context, regionName string, boardData *cor
 	embed := discord.Embed{
 		Title: fmt.Sprintf("시/도 확진자 수 조회 - %s", regionName),
 		Description: fmt.Sprintf(""+
-			"<:nujeok:687907310923677943> **확진자** : %s명(%s)\n"+
-			"<:chiryojung:711728328985411616> **치료중** : %s명\n"+
-			"<:wanchi:687907312052076594> 완치 : %s명\n"+
-			"<:samang:687907312123510817> 사망 : %s명",
+			"<:case:905916877040136272> **확진자** : %s명(%s)\n"+
+			"<:medicine:905916876796878859> **치료중** : %s명\n"+
+			"<:cure:905916877098876928> 완치 : %s명\n"+
+			"<:death:905916876729778247> 사망 : %s명",
 			humanize.Comma(status.Active),
 			increase(status.Active-status.ActivePrev),
 			humanize.Comma(status.Confirmed),
@@ -59,9 +59,9 @@ func handleForeignRegion(ctx context.Context, regionCode, regionName string, boa
 	embed := discord.Embed{
 		Title: fmt.Sprintf("%s 국가별 현황 - %s", status.Flag, regionName),
 		Description: fmt.Sprintf(""+
-			"<:nujeok:687907310923677943> **확진자** : %s명(%s)\n"+
-			"<:wanchi:687907312052076594> **완치자** : %s명(%s) - %d%%\n"+
-			"<:samang:687907312123510817> **사망자** : %s명(%s) - %d%%",
+			"<:case:905916877040136272> **확진자** : %s명(%s)\n"+
+			"<:cure:905916877098876928> **완치자** : %s명(%s) - %d%%\n"+
+			"<:death:905916876729778247> **사망자** : %s명(%s) - %d%%",
 			humanize.Comma(status.Confirmed),
 			increase(status.Confirmed-status.ConfirmedPrev),
 			humanize.Comma(status.Released),

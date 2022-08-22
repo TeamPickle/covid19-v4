@@ -58,10 +58,10 @@ func (t sendType) Emoji() string {
 		return "<:waeguk:687907310982791183>"
 	}
 	if t == 확진 {
-		return "<:nujeok:687907310923677943>"
+		return "<:case:905916877040136272>"
 	}
 	if t == 사망 {
-		return "<:samang:687907312123510817>"
+		return "<:death:905916876729778247>"
 	}
 	if t == 전체공지 {
 		return "📢"

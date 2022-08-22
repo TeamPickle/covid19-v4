@@ -22,10 +22,10 @@ func makeMainEmbed(data *mainData) discord.Embed {
 	return discord.Embed{
 		Title: "🗺️ 세계 코로나 현황",
 		Description: fmt.Sprintf(""+
-			"<:chiryojung:711728328985411616> 치료중 : %s\n"+
-			"<:nujeok:687907310923677943> 확진자 : %s(%s)\n"+
-			"<:wanchi:687907312052076594> 완치 : %s(%s)\n"+
-			"<:samang:687907312123510817> 사망 : %s(%s)\n"+
+			"<:medicine:905916876796878859> 치료중 : %s\n"+
+			"<:case:905916877040136272> 확진자 : %s(%s)\n"+
+			"<:cure:905916877098876928> 완치 : %s(%s)\n"+
+			"<:death:905916876729778247> 사망 : %s(%s)\n"+
 			"🚩 발생국 : %s",
 			humanize.Comma(data.active),
 			humanize.Comma(data.confirmed), humanize.Comma(data.confirmedDelta),
@@ -53,9 +53,9 @@ func makeDetailedEmbed(data []*detailData) discord.Embed {
 	for _, status := range data {
 		embed.Description += fmt.Sprintf(""+
 			"%s **%s** : "+
-			"<:nujeok:687907310923677943> %s / "+
-			"<:wanchi:687907312052076594> %s /"+
-			"<:samang:687907312123510817> %s\n",
+			"<:case:905916877040136272> %s / "+
+			"<:cure:905916877098876928> %s /"+
+			"<:death:905916876729778247> %s\n",
 			status.flag, status.countryName,
 			humanize.Comma(status.confirmed),
 			humanize.Comma(status.released),
