@@ -48,23 +48,32 @@ func MakeErrorMessage(req discord.InteractionEvent, recoverError any) *api.Inter
 		}
 	}
 
-	client := webhook.New(config.LogWebhookID, config.LogWebhookToken)
-	client.Execute(webhook.ExecuteData{
-		Content: fmt.Sprintf(""+
-			"오류가 발생했습니다.\n"+
-			"Author: %s (%s)\n"+
-			"Command: %s\n"+
-			"Code: %s\n",
-			req.Sender().Tag(),
-			req.SenderID(),
-			commandName,
-			code,
-		),
-		Embeds: []discord.Embed{
-			{Title: "Stack", Description: string(debug.Stack())},
-			{Title: "Error", Description: err.Error()},
-		},
-	})
+	{
+		client := webhook.New(config.LogWebhookID, config.LogWebhookToken)
+		data := webhook.ExecuteData{
+			Content: fmt.Sprintf(""+
+				"오류가 발생했습니다.\n"+
+				"Author: %s (%s)\n"+
+				"Command: %s\n"+
+				"Code: %s\n",
+				req.Sender().Tag(),
+				req.SenderID(),
+				commandName,
+				code,
+			),
+			Embeds: []discord.Embed{
+				{Title: "Stack", Description: string(debug.Stack())},
+				{Title: "Error", Description: err.Error()},
+			},
+		}
+		if len(data.Embeds[0].Description) > 4096 {
+			data.Embeds[0].Description = data.Embeds[0].Description[:4096]
+		}
+		if len(data.Embeds[1].Description) > 4096 {
+			data.Embeds[1].Description = data.Embeds[1].Description[:4096]
+		}
+		client.Execute(data)
+	}
 
 	return MessageInteractionResponseWithSource(&api.InteractionResponseData{
 		Embeds: &[]discord.Embed{
