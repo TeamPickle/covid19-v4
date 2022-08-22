@@ -109,7 +109,7 @@ func handleDomestic(ctx context.Context) *api.InteractionResponse {
 	return utils.MessageInteractionResponseWithSource(&api.InteractionResponseData{
 		Content: option.NewNullableString("국내 현황"),
 		Embeds: &[]discord.Embed{
-			*makeEmbedWithData(*ncovData[0], generateChartURL(ncovData)),
+			*makeEmbedWithData(ncovData[0], generateChartURL(ncovData)),
 		},
 	})
 }

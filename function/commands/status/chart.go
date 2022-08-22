@@ -3,10 +3,11 @@ package status
 import (
 	"bytes"
 	_ "embed"
+	"encoding/json"
+	"fmt"
 	"function/config"
 	"function/resources"
 	"io"
-	"time"
 
 	"github.com/diamondburned/arikawa/v3/api/webhook"
 	"github.com/diamondburned/arikawa/v3/utils/sendpart"
@@ -15,40 +16,23 @@ import (
 )
 
 func generateChart(data []*nCovData) io.Reader {
+	caseSeries := chart.TimeSeries{Name: "신규확진"}
+	deathSeries := chart.TimeSeries{Name: "사망"}
+
+	for _, v := range data {
+		caseSeries.XValues = append(caseSeries.XValues, v.date)
+		deathSeries.XValues = append(deathSeries.XValues, v.date)
+		caseSeries.YValues = append(caseSeries.YValues, float64(v.confirmedDelta))
+		deathSeries.YValues = append(deathSeries.YValues, float64(v.deathDelta))
+	}
+	a, _ := json.Marshal(data)
+	fmt.Println(string(a))
+
 	graph := chart.Chart{
-		Font: resources.Pretendard,
-		Series: []chart.Series{
-			chart.TimeSeries{
-				Name: "확진자",
-				XValues: []time.Time{
-					time.Date(2022, 0, 1, 9, 0, 0, 0, time.Local),
-					time.Date(2022, 0, 2, 9, 0, 0, 0, time.Local),
-					time.Date(2022, 0, 3, 9, 0, 0, 0, time.Local),
-					time.Date(2022, 0, 4, 9, 0, 0, 0, time.Local),
-					time.Date(2022, 0, 5, 9, 0, 0, 0, time.Local),
-					time.Date(2022, 0, 6, 9, 0, 0, 0, time.Local),
-					time.Date(2022, 0, 7, 9, 0, 0, 0, time.Local),
-					time.Date(2022, 0, 8, 9, 0, 0, 0, time.Local),
-					time.Date(2022, 0, 9, 9, 0, 0, 0, time.Local),
-				},
-				YValues: []float64{1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0},
-			},
-			chart.TimeSeries{
-				Name: "사망자",
-				XValues: []time.Time{
-					time.Date(2022, 0, 1, 9, 0, 0, 0, time.Local),
-					time.Date(2022, 0, 2, 9, 0, 0, 0, time.Local),
-					time.Date(2022, 0, 3, 9, 0, 0, 0, time.Local),
-					time.Date(2022, 0, 4, 9, 0, 0, 0, time.Local),
-					time.Date(2022, 0, 5, 9, 0, 0, 0, time.Local),
-					time.Date(2022, 0, 6, 9, 0, 0, 0, time.Local),
-					time.Date(2022, 0, 7, 9, 0, 0, 0, time.Local),
-					time.Date(2022, 0, 8, 9, 0, 0, 0, time.Local),
-					time.Date(2022, 0, 9, 9, 0, 0, 0, time.Local),
-				},
-				YValues: []float64{3.0, 4.0, 8.0, 12.0, 16.0, 3.0, 24.0, 28.0, 32.0},
-			},
-		},
+		Width:  600,
+		Height: 400,
+		Font:   resources.Pretendard,
+		Series: []chart.Series{caseSeries, deathSeries},
 		XAxis: chart.XAxis{
 			Style:          chart.StyleShow(),
 			GridMajorStyle: chart.Style{Show: true, StrokeColor: drawing.Color{R: 80, G: 80, B: 80, A: 255}, StrokeWidth: 1.0},
@@ -59,8 +43,6 @@ func generateChart(data []*nCovData) io.Reader {
 			GridMajorStyle: chart.Style{Show: true, StrokeColor: drawing.Color{R: 80, G: 80, B: 80, A: 255}, StrokeWidth: 1.0},
 			GridMinorStyle: chart.Style{Show: true, StrokeColor: drawing.Color{R: 160, G: 160, B: 160, A: 255}, StrokeWidth: 0.4},
 		},
-		Width:  600,
-		Height: 400,
 	}
 	graph.Elements = append(
 		graph.Elements,

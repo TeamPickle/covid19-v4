@@ -17,7 +17,7 @@ func increase(number int64) string {
 	return "-0"
 }
 
-func makeEmbedWithData(data nCovData, imageUrl string) *discord.Embed {
+func makeEmbedWithData(data *nCovData, imageUrl string) *discord.Embed {
 	return &discord.Embed{
 		Title: fmt.Sprintf("대한민국 코로나19 확진 정보 (%s 기준)", data.date.Format("2006년 01월 02일 15시")),
 		Description: fmt.Sprintf(""+

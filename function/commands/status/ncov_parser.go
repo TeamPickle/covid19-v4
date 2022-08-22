@@ -38,7 +38,7 @@ func parseNCov(ctx context.Context) ([]*nCovData, error) {
 	resp, err := client.R().
 		SetQueryParam("ServiceKey", config.OpenAPIkey).
 		SetQueryParam("pageNo", "1").
-		SetQueryParam("numOfRows", "7").
+		SetQueryParam("numOfRows", "8").
 		SetQueryParam("startCreateDt", time.Now().Add(-8*24*time.Hour).Format("20060102")).
 		SetQueryParam("endCreateDt", time.Now().Format("20060102")).
 		SetContext(ctx).
@@ -62,7 +62,7 @@ func parseNCov(ctx context.Context) ([]*nCovData, error) {
 		list = append(list, data)
 	})
 
-	nCovDataList := make([]*nCovData, 0)
+	nCovDataList := []*nCovData{}
 
 	for i := 0; i < len(list)-1; i++ {
 		data := nCovData{}
