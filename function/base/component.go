@@ -2,6 +2,7 @@ package base
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"function/utils"
 	"strings"
@@ -61,9 +62,21 @@ func (h *componentHandler) Handle(ctx context.Context, data discord.ComponentInt
 
 	if buttonInteraction, ok := data.(*discord.ButtonInteraction); ok {
 		buttonInteraction.CustomID = discord.ComponentID(action)
+		fmt.Println("button interaction", buttonInteraction.CustomID)
 	}
 	if selectInteraction, ok := data.(*discord.SelectInteraction); ok {
 		selectInteraction.CustomID = discord.ComponentID(action)
+		fmt.Println("select interaction", selectInteraction.CustomID)
+	}
+	if unknownComponent, ok := data.(*discord.UnknownComponent); ok {
+		var t struct {
+			Type     discord.ComponentType `json:"component_type"`
+			CustomID discord.ComponentID   `json:"custom_id"`
+		}
+		unknownComponent.UnmarshalTo(&t)
+		t.CustomID = discord.ComponentID(action)
+		bytesComponent, _ := json.Marshal(t)
+		data, _ = discord.ParseComponentInteraction(bytesComponent)
 	}
 
 	return convertCustomID(name, handler(ctx, data, rawRequest), rawRequest)
