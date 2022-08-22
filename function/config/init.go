@@ -8,6 +8,7 @@ import (
 )
 
 var (
+	Token           string
 	OpenAPIkey      string
 	LogWebhookID    discord.WebhookID = discord.NullWebhookID
 	LogWebhookToken string
@@ -19,6 +20,7 @@ var (
 func init() {
 	godotenv.Load()
 
+	Token = os.Getenv("BOT_TOKEN")
 	OpenAPIkey = os.Getenv("OPEN_API_KEY")
 	if channelID, err := discord.ParseSnowflake(os.Getenv("LOG_WEBHOOK_ID")); err == nil {
 		LogWebhookID = discord.WebhookID(channelID)
