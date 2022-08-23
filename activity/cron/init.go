@@ -9,7 +9,6 @@ import (
 
 	"github.com/diamondburned/arikawa/v3/discord"
 	"github.com/diamondburned/arikawa/v3/gateway"
-	"github.com/diamondburned/arikawa/v3/session"
 	"github.com/diamondburned/arikawa/v3/session/shard"
 	"github.com/diamondburned/arikawa/v3/state"
 	"github.com/dustin/go-humanize"
@@ -28,7 +27,7 @@ func (l internalLogger) Error(err error, msg string, keysAndValues ...interface{
 func Start(m *shard.Manager) {
 	changeActivity := func(message string) {
 		m.ForEach(func(shard shard.Shard) {
-			shard.(*session.Session).Gateway().Send(context.Background(), &gateway.UpdatePresenceCommand{
+			shard.(*state.State).Gateway().Send(context.Background(), &gateway.UpdatePresenceCommand{
 				Activities: []discord.Activity{{Name: message}},
 			})
 		})
