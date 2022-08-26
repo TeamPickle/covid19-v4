@@ -3,6 +3,7 @@ package status
 import (
 	"bytes"
 	"context"
+	"fmt"
 	"function/config"
 	"strconv"
 	"time"
@@ -33,6 +34,17 @@ type nCovData struct {
 	date                 time.Time
 }
 
+func (d *nCovData) String() string {
+	return fmt.Sprintf(
+		`%s 확진자: %d명 (%d명), 사망자: %d명 (%d명), 격리해제: %d명 (%d명), 검사중: %d명`,
+		d.date.Format("2006-01-02"),
+		d.confirmedAccumulated, d.confirmedDelta,
+		d.deathAccumulated, d.deathDelta,
+		d.releasedAccumulated, d.releasedDelta,
+		d.testingCount,
+	)
+}
+
 func parseNCov(ctx context.Context) ([]*nCovData, error) {
 	client := resty.New()
 	resp, err := client.R().
@@ -55,7 +67,7 @@ func parseNCov(ctx context.Context) ([]*nCovData, error) {
 		data := nCovItemData{}
 		data.activeCount, _ = strconv.ParseInt(s.Find("activeCnt").Text(), 10, 64)
 		data.confirmedCount, _ = strconv.ParseInt(s.Find("decideCnt").Text(), 10, 64)
-		data.date, _ = time.Parse("2006-01-02 15:04:05.000", s.Find("createDt").Text())
+		data.date, _ = time.Parse("2006-01-02 15:04:05", s.Find("createDt").Text())
 		data.deathCount, _ = strconv.ParseInt(s.Find("deathCnt").Text(), 10, 64)
 		data.releasedCount, _ = strconv.ParseInt(s.Find("clearCnt").Text(), 10, 64)
 		data.testingCount, _ = strconv.ParseInt(s.Find("examCnt").Text(), 10, 64)
