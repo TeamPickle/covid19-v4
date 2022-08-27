@@ -1,31 +1,19 @@
-//go:build !dev
-
 package main
 
 import (
 	"context"
 	"function/utils"
 
-	"github.com/aws/aws-lambda-go/events"
-	"github.com/aws/aws-lambda-go/lambda"
 	"github.com/diamondburned/arikawa/v3/api"
 	"github.com/diamondburned/arikawa/v3/discord"
 )
 
-func handler(ctx context.Context, request events.LambdaFunctionURLRequest) (events.LambdaFunctionURLResponse, error) {
-	if !validateSignature(request) {
-		return events.LambdaFunctionURLResponse{StatusCode: 401, Body: "Signature verification failed"}, nil
-	}
-
-	body := []byte(request.Body)
-	var interaction discord.InteractionEvent
-	interaction.UnmarshalJSON(body)
-
+func handler(ctx context.Context, interaction discord.InteractionEvent) *api.InteractionResponse {
 	if interaction.Data.InteractionType() == discord.PingInteractionType {
-		return responseOK(&api.InteractionResponse{Type: api.PongInteraction})
+		return &api.InteractionResponse{Type: api.PongInteraction}
 	}
 
-	response := func() (response *api.InteractionResponse) {
+	return func() (response *api.InteractionResponse) {
 		defer func() {
 			if r := recover(); r != nil {
 				response = utils.MakeErrorMessage(interaction, r)
@@ -37,7 +25,7 @@ func handler(ctx context.Context, request events.LambdaFunctionURLRequest) (even
 			if result := commandHandler.Handle(ctx, commandInteraction, interaction); result != nil {
 				response = result
 			}
-			return
+			return response
 		}
 		if interaction.Data.InteractionType() == discord.AutocompleteInteractionType {
 			autoCompleteInteraction := interaction.Data.(*discord.AutocompleteInteraction)
@@ -62,9 +50,4 @@ func handler(ctx context.Context, request events.LambdaFunctionURLRequest) (even
 		}
 		return nil
 	}()
-	return responseOK(response)
-}
-
-func run() {
-	lambda.Start(handler)
 }

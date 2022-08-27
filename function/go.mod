@@ -5,7 +5,7 @@ go 1.18
 require (
 	github.com/PuerkitoBio/goquery v1.8.0
 	github.com/aws/aws-lambda-go v1.34.1
-	github.com/diamondburned/arikawa/v3 v3.0.0
+	github.com/diamondburned/arikawa/v3 v3.1.0
 	github.com/dustin/go-humanize v1.0.0
 	github.com/fogleman/gg v1.3.0
 	github.com/go-resty/resty/v2 v2.7.0
@@ -32,6 +32,7 @@ require (
 	golang.org/x/image v0.0.0-20220722155232-062f8c9fd539 // indirect
 	golang.org/x/net v0.0.0-20211112202133-69e39bad7dc2 // indirect
 	golang.org/x/sync v0.0.0-20210220032951-036812b2e83c // indirect
+	golang.org/x/sys v0.0.0-20211001092434-39dca1131b70 // indirect
 	golang.org/x/text v0.3.7 // indirect
 	golang.org/x/time v0.0.0-20210723032227-1f47c861a9ac // indirect
 )
