@@ -1,6 +1,8 @@
 package utils
 
 import (
+	"bytes"
+	"encoding/json"
 	"fmt"
 	"function/config"
 	"net/http"
@@ -9,5 +11,7 @@ import (
 )
 
 func SendAllGuilds(message *discord.Message) {
-	http.Post(fmt.Sprintf("%s/channel/%s/message/%s", config.ActivityBaseURL, message.ChannelID, message.ID), "", nil)
+	embedsBytes, _ := json.Marshal(message.Embeds)
+	reader := bytes.NewReader(embedsBytes)
+	http.Post(fmt.Sprintf("%s/send-all", config.ActivityBaseURL), "application/json", reader)
 }

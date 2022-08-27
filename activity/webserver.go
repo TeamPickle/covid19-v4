@@ -16,28 +16,39 @@ func runWebServer(m *shard.Manager) {
 	me, _ := client.Me()
 	r := gin.Default()
 
-	r.POST("/channel/:channelId/message/:messageId", func(c *gin.Context) {
+	r.POST("/send-all", func(c *gin.Context) {
+		data := struct {
+			ChannelIDString string          `json:"channelId" binding:"required"`
+			MessageIDString string          `json:"messageId" binding:"required"`
+			Embeds          []discord.Embed `json:"embeds" binding:"required"`
+		}{}
+		c.Bind(&data)
+
 		channelID := discord.NullChannelID
 		messageID := discord.NullMessageID
-		if c, err := discord.ParseSnowflake(c.Param("channelId")); err == nil {
+
+		if c, err := discord.ParseSnowflake(data.ChannelIDString); err == nil {
 			channelID = discord.ChannelID(c)
 		}
-		if c, err := discord.ParseSnowflake(c.Param("messageId")); err == nil {
-			messageID = discord.MessageID(c)
+		if m, err := discord.ParseSnowflake(data.MessageIDString); err == nil {
+			messageID = discord.MessageID(m)
 		}
-		message, _ := client.Message(channelID, messageID)
+
 		editMessageId := messageID
+		message, _ := client.Message(channelID, messageID)
+
 		if message.Author.ID != me.ID {
 			m, _ := client.SendTextReply(channelID, "전송 시작", messageID)
 			editMessageId = m.ID
 		}
-		SendAllServers(m, message.Embeds[0], func(curr, all, errors int) {
+		SendAllServers(m, data.Embeds[0], func(curr, all, errors int) {
 			fmt.Println(curr)
-			if curr%10 == 0 {
-				client.EditMessage(channelID, editMessageId, fmt.Sprintf("전송 중... %d/%d, errors: %d", curr, all, errors), message.Embeds...)
-			}
 			if curr == all {
-				client.EditMessage(channelID, editMessageId, fmt.Sprintf("전송 완료 to %d servers with %d errors", all, errors), message.Embeds...)
+				client.EditMessage(channelID, editMessageId, fmt.Sprintf("전송 완료 to %d servers with %d errors", all, errors), data.Embeds...)
+				return
+			}
+			if curr%20 == 0 {
+				client.EditMessage(channelID, editMessageId, fmt.Sprintf("전송 중... %d/%d, errors: %d", curr, all, errors), data.Embeds...)
 			}
 		})
 		c.JSON(http.StatusOK, gin.H{})
