@@ -62,11 +62,9 @@ func (h *componentHandler) Handle(ctx context.Context, data discord.ComponentInt
 
 	if buttonInteraction, ok := data.(*discord.ButtonInteraction); ok {
 		buttonInteraction.CustomID = discord.ComponentID(action)
-		fmt.Println("button interaction", buttonInteraction.CustomID)
 	}
 	if selectInteraction, ok := data.(*discord.SelectInteraction); ok {
 		selectInteraction.CustomID = discord.ComponentID(action)
-		fmt.Println("select interaction", selectInteraction.CustomID)
 	}
 	if unknownComponent, ok := data.(*discord.UnknownComponent); ok {
 		var t struct {
