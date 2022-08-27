@@ -3,12 +3,14 @@ package status
 import (
 	"context"
 	"fmt"
+	"function/config"
 	"function/external/coronaboard"
 	"function/models"
 	"function/utils"
 	"strings"
 
 	"github.com/diamondburned/arikawa/v3/api"
+	"github.com/diamondburned/arikawa/v3/api/webhook"
 	"github.com/diamondburned/arikawa/v3/discord"
 	"github.com/diamondburned/arikawa/v3/utils/json/option"
 	"github.com/dustin/go-humanize"
@@ -109,20 +111,25 @@ func handleDomestic(ctx context.Context) *api.InteractionResponse {
 		panic("Can't parse ncov data")
 	}
 
-	chartURL := ""
 	referenceDate := ncovData[0].date
 	if lastGraph.ReferenceDate.UTC() == referenceDate.UTC() {
-		chartURL = lastGraph.URL
-	} else {
-		chartURL = generateChartURL(ncovData)
-		models.AddNewGraph(chartURL, referenceDate)
+		return utils.MessageInteractionResponseWithSource(&api.InteractionResponseData{
+			Embeds: &[]discord.Embed{
+				*makeEmbedWithData(ncovData[0], lastGraph.URL),
+			},
+		})
 	}
-	return utils.MessageInteractionResponseWithSource(&api.InteractionResponseData{
-		Content: option.NewNullableString("국내 현황"),
-		Embeds: &[]discord.Embed{
-			*makeEmbedWithData(ncovData[0], chartURL),
-		},
-	})
+	chartURL := generateChartURL(ncovData)
+	models.AddNewGraph(chartURL, referenceDate)
+	embeds := []discord.Embed{*makeEmbedWithData(ncovData[0], chartURL)}
+	{
+		client := webhook.New(config.LogWebhookID, config.LogWebhookToken)
+		data := webhook.ExecuteData{Embeds: embeds}
+		m, _ := client.ExecuteAndWait(data)
+		go utils.SendAllGuilds(m)
+	}
+
+	return utils.MessageInteractionResponseWithSource(&api.InteractionResponseData{Embeds: &embeds})
 }
 
 func (c *StatusCommand) Handle(ctx context.Context, interaction *discord.CommandInteraction, rawRequest discord.InteractionEvent) *api.InteractionResponse {

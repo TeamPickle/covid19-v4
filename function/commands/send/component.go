@@ -2,9 +2,7 @@ package send
 
 import (
 	"context"
-	"fmt"
-	"function/config"
-	"net/http"
+	"function/utils"
 	"strings"
 
 	"github.com/diamondburned/arikawa/v3/api"
@@ -27,7 +25,7 @@ func (*SendComponent) Handle(ctx context.Context, data discord.ComponentInteract
 	if strings.HasPrefix(idString, "typo") {
 		return makeModalResponse(idString[5:])
 	}
-	go http.Post(fmt.Sprintf("%s/channel/%s/message/%s", config.ActivityBaseURL, rawRequest.Message.ChannelID, rawRequest.Message.ID), "", nil)
+	go utils.SendAllGuilds(rawRequest.Message)
 	return &api.InteractionResponse{
 		Type: api.UpdateMessage,
 		Data: &api.InteractionResponseData{
