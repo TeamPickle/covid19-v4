@@ -4,6 +4,7 @@ import (
 	"context"
 	"function/utils"
 	"strings"
+	"time"
 
 	"github.com/diamondburned/arikawa/v3/api"
 	"github.com/diamondburned/arikawa/v3/discord"
@@ -26,6 +27,7 @@ func (*SendComponent) Handle(ctx context.Context, data discord.ComponentInteract
 		return makeModalResponse(idString[5:])
 	}
 	go utils.SendAllGuilds(rawRequest.Message)
+	time.Sleep(1 * time.Second)
 	return &api.InteractionResponse{
 		Type: api.UpdateMessage,
 		Data: &api.InteractionResponseData{
