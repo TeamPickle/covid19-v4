@@ -39,11 +39,11 @@ func runWebServer(m *shard.Manager) {
 		SendAllServers(m, data.Embeds[0], func(curr, all, errors int) {
 			fmt.Println(curr)
 			if curr == all {
-				client.EditMessage(channelID, editMessageId, fmt.Sprintf("전송 완료 to %d servers with %d errors", all, errors), data.Embeds...)
+				client.EditMessage(channelID, editMessageId, fmt.Sprintf("전송 완료 to %d servers with %d errors", all, errors))
 				return
 			}
 			if curr%20 == 0 {
-				client.EditMessage(channelID, editMessageId, fmt.Sprintf("전송 중... %d/%d, errors: %d", curr, all, errors), data.Embeds...)
+				client.EditMessage(channelID, editMessageId, fmt.Sprintf("전송 중... %d/%d, errors: %d", curr, all, errors))
 			}
 		})
 		c.JSON(http.StatusOK, gin.H{})
