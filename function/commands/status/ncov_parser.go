@@ -67,7 +67,7 @@ func parseNCov(ctx context.Context) ([]*nCovData, error) {
 		data := nCovItemData{}
 		data.activeCount, _ = strconv.ParseInt(s.Find("activeCnt").Text(), 10, 64)
 		data.confirmedCount, _ = strconv.ParseInt(s.Find("decideCnt").Text(), 10, 64)
-		data.date, _ = time.Parse("2006-01-02 15:04:05", s.Find("createDt").Text())
+		data.date, _ = time.ParseInLocation("2006-01-02 15:04:05", s.Find("createDt").Text(), time.FixedZone("Asia/Seoul", 9*60*60))
 		data.deathCount, _ = strconv.ParseInt(s.Find("deathCnt").Text(), 10, 64)
 		data.releasedCount, _ = strconv.ParseInt(s.Find("clearCnt").Text(), 10, 64)
 		data.testingCount, _ = strconv.ParseInt(s.Find("examCnt").Text(), 10, 64)

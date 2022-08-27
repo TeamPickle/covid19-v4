@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"function/external/coronaboard"
+	"function/models"
 	"function/utils"
 	"strings"
 
@@ -103,13 +104,23 @@ func handleRegion(ctx context.Context, regionName string) *api.InteractionRespon
 
 func handleDomestic(ctx context.Context) *api.InteractionResponse {
 	ncovData, err := parseNCov(ctx)
+	lastGraph := models.GetLastGraph()
 	if err != nil {
 		panic("Can't parse ncov data")
+	}
+
+	chartURL := ""
+	referenceDate := ncovData[0].date
+	if lastGraph.ReferenceDate.UTC() == referenceDate.UTC() {
+		chartURL = lastGraph.URL
+	} else {
+		chartURL = generateChartURL(ncovData)
+		models.AddNewGraph(chartURL, referenceDate)
 	}
 	return utils.MessageInteractionResponseWithSource(&api.InteractionResponseData{
 		Content: option.NewNullableString("국내 현황"),
 		Embeds: &[]discord.Embed{
-			*makeEmbedWithData(ncovData[0], generateChartURL(ncovData)),
+			*makeEmbedWithData(ncovData[0], chartURL),
 		},
 	})
 }

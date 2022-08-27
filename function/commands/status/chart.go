@@ -27,7 +27,7 @@ func generateChart(data []*nCovData) io.Reader {
 	xTicks := chart.Ticks{}
 
 	for _, v := range data {
-		v.date = v.date.Truncate(time.Hour * 24)
+		v.date = v.date.Add(time.Hour * 9).Truncate(time.Hour * 24)
 		caseSeries.XValues = append(caseSeries.XValues, v.date)
 		deathSeries.XValues = append(deathSeries.XValues, v.date)
 		caseSeries.YValues = append(caseSeries.YValues, float64(v.confirmedDelta))
