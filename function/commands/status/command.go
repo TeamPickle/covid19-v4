@@ -8,6 +8,7 @@ import (
 	"function/models"
 	"function/utils"
 	"strings"
+	"time"
 
 	"github.com/diamondburned/arikawa/v3/api"
 	"github.com/diamondburned/arikawa/v3/api/webhook"
@@ -127,6 +128,7 @@ func handleDomestic(ctx context.Context) *api.InteractionResponse {
 		data := webhook.ExecuteData{Embeds: embeds}
 		m, _ := client.ExecuteAndWait(data)
 		go utils.SendAllGuilds(m)
+		time.Sleep(time.Second * 1)
 	}
 
 	return utils.MessageInteractionResponseWithSource(&api.InteractionResponseData{Embeds: &embeds})
