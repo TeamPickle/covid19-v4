@@ -10,7 +10,7 @@ import (
 	"github.com/diamondburned/arikawa/v3/utils/json/option"
 )
 
-func (*SendModal) Handle(ctx context.Context, data discord.ModalInteraction, rawRequest discord.InteractionEvent) *api.InteractionResponse {
+func (*SendModal) Handle(ctx context.Context, data *discord.ModalInteraction, rawRequest discord.InteractionEvent) *api.InteractionResponse {
 	selectedType := sendType(data.CustomID)
 	actionRowComponent := *data.Components[0].(*discord.ActionRowComponent)
 	textComponent := actionRowComponent[0].(*discord.TextInputComponent)

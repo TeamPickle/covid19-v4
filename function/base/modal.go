@@ -8,16 +8,16 @@ import (
 	"github.com/diamondburned/arikawa/v3/discord"
 )
 
-type modalHandlerFunc func(ctx context.Context, data discord.ModalInteraction, rawRequest discord.InteractionEvent) *api.InteractionResponse
+type modalHandlerFunc func(ctx context.Context, data *discord.ModalInteraction, rawRequest discord.InteractionEvent) *api.InteractionResponse
 
 type Modal interface {
-	Handle(ctx context.Context, data discord.ModalInteraction, rawRequest discord.InteractionEvent) *api.InteractionResponse
+	Handle(ctx context.Context, data *discord.ModalInteraction, rawRequest discord.InteractionEvent) *api.InteractionResponse
 	Name() string
 }
 
 type ModalHandler interface {
 	Register(commands ...Modal)
-	Handle(ctx context.Context, data discord.ModalInteraction, rawRequest discord.InteractionEvent) *api.InteractionResponse
+	Handle(ctx context.Context, data *discord.ModalInteraction, rawRequest discord.InteractionEvent) *api.InteractionResponse
 }
 
 type modalHandler struct {
@@ -34,7 +34,7 @@ func (h *modalHandler) Register(commands ...Modal) {
 	}
 }
 
-func (h *modalHandler) Handle(ctx context.Context, data discord.ModalInteraction, rawRequest discord.InteractionEvent) *api.InteractionResponse {
+func (h *modalHandler) Handle(ctx context.Context, data *discord.ModalInteraction, rawRequest discord.InteractionEvent) *api.InteractionResponse {
 	tokens := strings.Split(string(data.CustomID), ":")
 	if len(tokens) != 2 {
 		return nil

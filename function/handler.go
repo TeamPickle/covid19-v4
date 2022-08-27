@@ -20,34 +20,16 @@ func handler(ctx context.Context, interaction discord.InteractionEvent) *api.Int
 			}
 		}()
 
-		if interaction.Data.InteractionType() == discord.CommandInteractionType {
-			commandInteraction := interaction.Data.(*discord.CommandInteraction)
-			if result := commandHandler.Handle(ctx, commandInteraction, interaction); result != nil {
-				response = result
-			}
-			return response
+		switch i := interaction.Data.(type) {
+		case *discord.CommandInteraction:
+			return commandHandler.Handle(ctx, i, interaction)
+		case *discord.AutocompleteInteraction:
+			return autoCompleteHandler.Handle(ctx, i)
+		case discord.ComponentInteraction:
+			return componentHandler.Handle(ctx, i, interaction)
+		case *discord.ModalInteraction:
+			return modalHandler.Handle(ctx, i, interaction)
 		}
-		if interaction.Data.InteractionType() == discord.AutocompleteInteractionType {
-			autoCompleteInteraction := interaction.Data.(*discord.AutocompleteInteraction)
-			if result := autoCompleteHandler.Handle(ctx, autoCompleteInteraction); result != nil {
-				response = result
-			}
-			return
-		}
-		if interaction.Data.InteractionType() == discord.ComponentInteractionType {
-			componentInteraction := interaction.Data.(discord.ComponentInteraction)
-			if result := componentHandler.Handle(ctx, componentInteraction, interaction); result != nil {
-				response = result
-			}
-			return
-		}
-		if interaction.Data.InteractionType() == discord.ModalInteractionType {
-			componentInteraction := interaction.Data.(*discord.ModalInteraction)
-			if result := modalHandler.Handle(ctx, *componentInteraction, interaction); result != nil {
-				response = result
-			}
-			return
-		}
-		return nil
+		return
 	}()
 }
