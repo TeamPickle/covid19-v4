@@ -16,28 +16,39 @@ import (
 )
 
 func generateChart(data []*nCovData) io.Reader {
-	caseSeries := chart.TimeSeries{Name: "신규확진"}
-	deathSeries := chart.TimeSeries{Name: "사망"}
+	caseSeries := chart.TimeSeries{Name: "신규확진", Style: chart.Style{
+		Show: true, StrokeColor: drawing.ColorRed, StrokeWidth: 2, DotColor: drawing.ColorRed, DotWidth: 2,
+	}}
+	deathSeries := chart.TimeSeries{Name: "사망", Style: chart.Style{
+		Show: true, StrokeColor: drawing.ColorBlack, StrokeWidth: 2, DotColor: drawing.ColorBlack, DotWidth: 2,
+	}}
+	labels := chartTextSeries{}
+
 	xTicks := chart.Ticks{}
-	labels := chart.AnnotationSeries{}
 
 	for _, v := range data {
-		date := v.date.Truncate(time.Hour * 24)
-		caseSeries.XValues = append(caseSeries.XValues, date)
-		deathSeries.XValues = append(deathSeries.XValues, date)
+		v.date = v.date.Truncate(time.Hour * 24)
+		caseSeries.XValues = append(caseSeries.XValues, v.date)
+		deathSeries.XValues = append(deathSeries.XValues, v.date)
 		caseSeries.YValues = append(caseSeries.YValues, float64(v.confirmedDelta))
 		deathSeries.YValues = append(deathSeries.YValues, float64(v.deathDelta))
-		xTicks = append(xTicks, chart.Tick{Value: float64(date.UnixNano()), Label: date.Format("01-02")})
+		xTicks = append(xTicks, chart.Tick{Value: float64(v.date.UnixNano()), Label: v.date.Format("01-02")})
 		labels.Annotations = append(labels.Annotations, chart.Value2{
 			Label:  fmt.Sprintf("%d", v.confirmedDelta),
-			XValue: float64(date.UnixNano()),
+			XValue: float64(v.date.UnixNano()),
 			YValue: float64(v.confirmedDelta),
 		}, chart.Value2{
 			Label:  fmt.Sprintf("%d", v.deathDelta),
-			XValue: float64(date.UnixNano()),
+			XValue: float64(v.date.UnixNano()),
 			YValue: float64(v.deathDelta),
 		})
 	}
+
+	xTicks = append(
+		xTicks,
+		chart.Tick{Value: float64(data[0].date.Add(time.Hour * 24).UnixNano()), Label: data[0].date.Add(time.Hour * 24).Format("01-02")},
+		chart.Tick{Value: float64(data[len(data)-1].date.Add(-time.Hour * 24).UnixNano()), Label: data[len(data)-1].date.Add(-time.Hour * 24).Format("01-02")},
+	)
 
 	graph := chart.Chart{
 		Width:  600,
