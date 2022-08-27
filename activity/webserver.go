@@ -13,6 +13,7 @@ import (
 
 func runWebServer(m *shard.Manager) {
 	client := api.NewClient("Bot " + config.Token)
+	me, _ := client.Me()
 	r := gin.Default()
 
 	r.POST("/channel/:channelId/message/:messageId", func(c *gin.Context) {
@@ -25,12 +26,18 @@ func runWebServer(m *shard.Manager) {
 			messageID = discord.MessageID(c)
 		}
 		message, _ := client.Message(channelID, messageID)
+		editMessageId := messageID
+		if message.Author.ID != me.ID {
+			m, _ := client.SendTextReply(channelID, "전송 시작", messageID)
+			editMessageId = m.ID
+		}
 		SendAllServers(m, message.Embeds[0], func(curr, all, errors int) {
+			fmt.Println(curr)
 			if curr%10 == 0 {
-				client.EditMessage(channelID, messageID, fmt.Sprintf("전송 중... %d/%d, errors: %d", curr, all, errors), message.Embeds...)
+				client.EditMessage(channelID, editMessageId, fmt.Sprintf("전송 중... %d/%d, errors: %d", curr, all, errors), message.Embeds...)
 			}
 			if curr == all {
-				client.EditMessage(channelID, messageID, fmt.Sprintf("전송 완료 to %d servers with %d errors", all, errors), message.Embeds...)
+				client.EditMessage(channelID, editMessageId, fmt.Sprintf("전송 완료 to %d servers with %d errors", all, errors), message.Embeds...)
 			}
 		})
 		c.JSON(http.StatusOK, gin.H{})
