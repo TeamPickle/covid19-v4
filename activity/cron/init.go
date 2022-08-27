@@ -31,6 +31,7 @@ func Start(m *shard.Manager) {
 		m.ForEach(func(shard shard.Shard) {
 			if err := shard.(*state.State).Gateway().Send(context.Background(), &gateway.UpdatePresenceCommand{
 				Activities: []discord.Activity{{Name: message}},
+				Status:     discord.OnlineStatus,
 			}); err != nil {
 				panic(err)
 			}
