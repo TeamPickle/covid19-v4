@@ -1,0 +1,31 @@
+name: deploy function to lambda
+'on':
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy_zip:
+    name: build function and make zip file, and deploy to lambda
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        go-version: [1.19.x]
+    steps:
+      - name: Checkout Source Code
+        uses: actions/checkout@v1
+      - name: Install Go
+        uses: actions/setup-go@v1
+        with:
+          go-version: ${{ matrix.go-version }}
+      - name: Build Binary
+        run: |
+          cd function && CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o hello && zip function.zip hello
+      - name: Deploy to Lambda
+        uses: appleboy/lambda-action@master
+        with:
+          aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws_region: ${{ secrets.AWS_REGION }}
+          function_name: ${{ secrets.AWS_FUNCTION_NAME }}
+          zip_file: function/function.zip
