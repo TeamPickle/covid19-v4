@@ -29,7 +29,8 @@ func (l internalLogger) Error(err error, msg string, keysAndValues ...interface{
 func Start(m *shard.Manager) {
 	changeActivity := func(message string) {
 		m.ForEach(func(shard shard.Shard) {
-			if err := shard.(*state.State).Gateway().Send(context.Background(), &gateway.UpdatePresenceCommand{
+			state := shard.(*state.State)
+			if err := state.Gateway().Send(context.Background(), &gateway.UpdatePresenceCommand{
 				Activities: []discord.Activity{{Name: message}},
 				Status:     discord.OnlineStatus,
 			}); err != nil {

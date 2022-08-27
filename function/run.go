@@ -24,6 +24,9 @@ func run() {
 			interaction.UnmarshalJSON(body)
 
 			res := handler(ctx, interaction)
+			if res == nil {
+				return events.LambdaFunctionURLResponse{StatusCode: 404}, nil
+			}
 			return responseOK(res)
 		}
 		lambda.Start(lambdaHandler)
