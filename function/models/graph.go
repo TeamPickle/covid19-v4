@@ -1,8 +1,8 @@
 package models
 
 import (
-	"activity/database"
 	"context"
+	"function/database"
 	"time"
 
 	"go.mongodb.org/mongo-driver/bson"
