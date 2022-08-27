@@ -37,7 +37,6 @@ func runWebServer(m *shard.Manager) {
 		editMessageId := editMessage.ID
 
 		SendAllServers(m, data.Embeds[0], func(curr, all, errors int) {
-			fmt.Println(curr)
 			if curr == all {
 				client.EditMessage(channelID, editMessageId, fmt.Sprintf("전송 완료 to %d servers with %d errors", all, errors))
 				return
