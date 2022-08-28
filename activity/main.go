@@ -12,14 +12,9 @@ import (
 	"github.com/diamondburned/arikawa/v3/session/shard"
 	"github.com/diamondburned/arikawa/v3/state"
 	"github.com/diamondburned/arikawa/v3/utils/json/option"
-	"github.com/diamondburned/arikawa/v3/utils/ws"
 )
 
 func main() {
-	ws.WSDebug = func(v ...any) {
-		log.Print("WS: ")
-		log.Println(v)
-	}
 	newShard := state.NewShardFunc(func(m *shard.Manager, s *state.State) {
 		s.AddIntents(gateway.IntentGuilds)
 		s.AddHandler(func(e *gateway.InteractionCreateEvent) {
