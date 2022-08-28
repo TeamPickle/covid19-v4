@@ -41,7 +41,7 @@ func runWebServer(m *shard.Manager) {
 				client.EditMessage(channelID, editMessageId, fmt.Sprintf("전송 완료 to %d servers with %d errors", all, errors))
 				return
 			}
-			if curr%20 == 0 {
+			if curr%50 == 0 {
 				client.EditMessage(channelID, editMessageId, fmt.Sprintf("전송 중... %d/%d, errors: %d", curr, all, errors))
 			}
 		})
