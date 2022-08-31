@@ -5,8 +5,6 @@ import (
 	"activity/internal"
 	"context"
 	"fmt"
-	"log"
-	"os"
 	"time"
 
 	"github.com/diamondburned/arikawa/v3/discord"
@@ -57,7 +55,6 @@ func Start(m *shard.Manager) {
 	c := cron.New(
 		cron.WithChain(cron.Recover(cron.DefaultLogger)),
 		cron.WithChain(cron.Recover(internalLogger{})),
-		cron.WithLogger(cron.VerbosePrintfLogger(log.New(os.Stdout, "cron: ", log.LstdFlags))),
 		cron.WithSeconds())
 	c.AddFunc("0,15,30,45 * * * * *", func() {
 		changeActivity("/도움 으로 명령어 확인")
