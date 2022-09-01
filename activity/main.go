@@ -16,7 +16,7 @@ import (
 
 func main() {
 	newShard := state.NewShardFunc(func(m *shard.Manager, s *state.State) {
-		s.AddIntents(gateway.IntentGuilds)
+		s.AddIntents(0)
 		s.AddHandler(func(e *gateway.InteractionCreateEvent) {
 			if e.Data.InteractionType() != discord.CommandInteractionType {
 				return
