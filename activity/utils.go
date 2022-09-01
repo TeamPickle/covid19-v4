@@ -3,6 +3,7 @@ package main
 import (
 	"activity/models"
 	"context"
+	"errors"
 	"fmt"
 	"sort"
 	"sync"
@@ -16,7 +17,7 @@ func SendAllServers(m *shard.Manager, embed discord.Embed, onProgress func(curr 
 	guard := make(chan struct{}, 10)
 	wg := sync.WaitGroup{}
 	curr := 0
-	errors := 0
+	errorCount := 0
 	allGuilds := 0
 
 	m.ForEach(func(shard shard.Shard) {
@@ -36,7 +37,7 @@ func SendAllServers(m *shard.Manager, embed discord.Embed, onProgress func(curr 
 						<-guard
 						wg.Done()
 						curr++
-						onProgress(curr, allGuilds, errors)
+						onProgress(curr, allGuilds, errorCount)
 					}()
 					channelID := models.GetChannelIDSettingSnowflake(context.TODO(), guild.ID.String())
 					channelEmbed := embed
@@ -54,7 +55,7 @@ func SendAllServers(m *shard.Manager, embed discord.Embed, onProgress func(curr 
 					sort.Slice(channels, func(i, j int) bool {
 						return channels[i].Position < channels[j].Position
 					})
-					var err error
+					err := errors.New("no channels")
 					for _, channel := range channels {
 						if _, err = state.SendEmbeds(channel.ID, channelEmbed); err == nil {
 							models.UpdateChannelIDSetting(context.TODO(), guild.ID.String(), channel.ID.String())
@@ -63,7 +64,7 @@ func SendAllServers(m *shard.Manager, embed discord.Embed, onProgress func(curr 
 					}
 
 					// TODO: 이래도 안 되면 추가적인 처리가 필요합니다.
-					errors++
+					errorCount++
 					fmt.Println(err, guild.ID, guild.Name, guild.OwnerID)
 				}(guild)
 			}
@@ -71,5 +72,5 @@ func SendAllServers(m *shard.Manager, embed discord.Embed, onProgress func(curr 
 	})
 
 	wg.Wait()
-	onProgress(allGuilds, allGuilds, errors)
+	onProgress(allGuilds, allGuilds, errorCount)
 }
