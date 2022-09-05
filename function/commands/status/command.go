@@ -13,6 +13,7 @@ import (
 	"github.com/diamondburned/arikawa/v3/api"
 	"github.com/diamondburned/arikawa/v3/api/webhook"
 	"github.com/diamondburned/arikawa/v3/discord"
+	"github.com/diamondburned/arikawa/v3/state"
 	"github.com/diamondburned/arikawa/v3/utils/json/option"
 	"github.com/dustin/go-humanize"
 )
@@ -131,11 +132,20 @@ func handleDomestic(ctx context.Context) *api.InteractionResponse {
 		time.Sleep(time.Second * 1)
 	}
 
-	return utils.MessageInteractionResponseWithSource(&api.InteractionResponseData{Embeds: &embeds})
+	return &api.InteractionResponse{
+		Type: api.UpdateMessage,
+		Data: &api.InteractionResponseData{
+			Embeds: &embeds,
+		},
+	}
 }
 
 func (c *StatusCommand) Handle(ctx context.Context, interaction *discord.CommandInteraction, rawRequest discord.InteractionEvent) *api.InteractionResponse {
 	if len(interaction.Options) == 0 {
+		state := state.NewAPIOnlyState("Bot "+config.Token, nil)
+		state.Client.RespondInteraction(rawRequest.ID, rawRequest.Token, api.InteractionResponse{
+			Type: api.DeferredMessageInteractionWithSource,
+		})
 		return handleDomestic(ctx)
 	}
 	return handleRegion(ctx, interaction.Options[0].String())
