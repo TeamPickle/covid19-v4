@@ -106,7 +106,12 @@ func handleRegion(ctx context.Context, regionName string) *api.InteractionRespon
 	})
 }
 
-func handleDomestic(ctx context.Context) *api.InteractionResponse {
+func handleDomestic(ctx context.Context, rawRequest discord.InteractionEvent) *api.InteractionResponse {
+	state := state.NewAPIOnlyState("Bot "+config.Token, nil)
+	state.Client.RespondInteraction(rawRequest.ID, rawRequest.Token, api.InteractionResponse{
+		Type: api.DeferredMessageInteractionWithSource,
+	})
+
 	ncovData, err := parseNCov(ctx)
 	lastGraph := models.GetLastGraph()
 	if err != nil {
@@ -132,21 +137,16 @@ func handleDomestic(ctx context.Context) *api.InteractionResponse {
 		time.Sleep(time.Second * 1)
 	}
 
-	return &api.InteractionResponse{
-		Type: api.UpdateMessage,
-		Data: &api.InteractionResponseData{
-			Embeds: &embeds,
-		},
-	}
+	state.Client.EditInteractionResponse(rawRequest.AppID, rawRequest.Token, api.EditInteractionResponseData{
+		Embeds: &embeds,
+	})
+
+	return nil
 }
 
 func (c *StatusCommand) Handle(ctx context.Context, interaction *discord.CommandInteraction, rawRequest discord.InteractionEvent) *api.InteractionResponse {
 	if len(interaction.Options) == 0 {
-		state := state.NewAPIOnlyState("Bot "+config.Token, nil)
-		state.Client.RespondInteraction(rawRequest.ID, rawRequest.Token, api.InteractionResponse{
-			Type: api.DeferredMessageInteractionWithSource,
-		})
-		return handleDomestic(ctx)
+		return handleDomestic(ctx, rawRequest)
 	}
 	return handleRegion(ctx, interaction.Options[0].String())
 }
