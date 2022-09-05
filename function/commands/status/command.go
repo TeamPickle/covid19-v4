@@ -120,7 +120,7 @@ func handleDomestic(ctx context.Context, rawRequest discord.InteractionEvent) *a
 
 	referenceDate := ncovData[0].date
 	if lastGraph.ReferenceDate.UTC() == referenceDate.UTC() {
-		return utils.MessageInteractionResponseWithSource(&api.InteractionResponseData{
+		state.Client.EditInteractionResponse(rawRequest.AppID, rawRequest.Token, api.EditInteractionResponseData{
 			Embeds: &[]discord.Embed{
 				*makeEmbedWithData(ncovData[0], lastGraph.URL),
 			},
