@@ -125,6 +125,7 @@ func handleDomestic(ctx context.Context, rawRequest discord.InteractionEvent) *a
 				*makeEmbedWithData(ncovData[0], lastGraph.URL),
 			},
 		})
+		return nil
 	}
 	chartURL := generateChartURL(ncovData)
 	models.AddNewGraph(chartURL, referenceDate)
