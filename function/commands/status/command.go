@@ -21,7 +21,7 @@ import (
 func handleDomesticRegion(ctx context.Context, regionName string, boardData *coronaboard.CoronaBoardData) *api.InteractionResponse {
 	var status *coronaboard.DomesticNowStatus
 	for _, v := range boardData.StatDomesticNow {
-		if v.Region == regionName {
+		if v.Region == regionName || (regionName == "전국" && v.Region == "합계") {
 			status = &v
 			break
 		}
