@@ -21,7 +21,7 @@ import (
 func handleDomesticRegion(ctx context.Context, regionName string, boardData *coronaboard.CoronaBoardData) *api.InteractionResponse {
 	var status *coronaboard.DomesticNowStatus
 	for _, v := range boardData.StatDomesticNow {
-		if v.Region == regionName || (regionName == "전국" && v.Region == "합계") {
+		if v.Region == regionName {
 			status = &v
 			break
 		}
@@ -146,7 +146,7 @@ func handleDomestic(ctx context.Context, rawRequest discord.InteractionEvent) *a
 }
 
 func (c *StatusCommand) Handle(ctx context.Context, interaction *discord.CommandInteraction, rawRequest discord.InteractionEvent) *api.InteractionResponse {
-	if len(interaction.Options) == 0 {
+	if len(interaction.Options) == 0 || interaction.Options[0].String() == "전국" {
 		return handleDomestic(ctx, rawRequest)
 	}
 	return handleRegion(ctx, interaction.Options[0].String())
