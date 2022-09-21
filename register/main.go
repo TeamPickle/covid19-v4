@@ -140,7 +140,6 @@ func main() {
 		NameLocalizations:        discord.StringLocales{discord.Korean: "재난문자"},
 		Description:              "특정 지역의 재난문자를 불러옵니다.",
 		Options:                  discord.CommandOptions{&provinceOption},
-		DefaultMemberPermissions: discord.NewPermissions(discord.PermissionAdministrator),
 	})
 	addGuildCommand(api.CreateCommandData{
 		Name:        "send",
